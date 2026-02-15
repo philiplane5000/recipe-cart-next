@@ -1,0 +1,6 @@
+.next/
+out/
+build/
+dist/
+coverage/
+package-lock.json

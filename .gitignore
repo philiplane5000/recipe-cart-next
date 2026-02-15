@@ -1,0 +1,49 @@
+# Dependency directories
+node_modules/
+jspm_packages/
+debug.log
+proxy.log
+
+# Next.js build output
+.next/
+out/
+
+# Build logs and production build artifacts
+build/
+dist/
+.vercel
+
+# Environment variables (Crucial for security)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing
+coverage/
+.nyc_output
+
+# IDE / Editor folders
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Lockfiles (Optional: keep these UNLESS you are building a library)
+# npm-debug.log*
+# yarn-debug.log*
+# yarn-error.log*
