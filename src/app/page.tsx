@@ -1,9 +1,9 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 export default function Home() {
   return (
-    <div className="m-8 flex min-h-screen items-center justify-center">
-      <main className="rounded-tr-2xl rounded-bl-2xl border-2 border-indigo-700 p-12">
+    <div className="flex min-h-screen items-center justify-center">
+      <main className="rounded-tr-2xl rounded-bl-2xl border-2 border-black p-8">
         <Image
           className="dark:invert"
           src="/next.svg"

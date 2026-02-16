@@ -58,6 +58,7 @@ cp .env.example .env.local
 
 - **Framework**: [Next.js](https://nextjs.org/) - React framework with TypeScript
 - **CSS Framework**: [Tailwind CSS](https://tailwindcss.com/) - Utility-first styling
+- **Component Library**: [React Aria](https://react-aria.adobe.com/) - Accessible Component Library
 - **Database**: [MongoDB Atlas](https://www.mongodb.com/atlas) - Cloud-native document database
 - **Language**: TypeScript for type safety and better DX
 
@@ -83,6 +84,7 @@ cp .env.example .env.local
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [React Aria](https://react-aria.adobe.com/)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
 - [MongoDB Atlas Documentation](https://www.mongodb.com/docs/atlas/)
 
@@ -100,7 +102,7 @@ interface Recipe {
   prepTime: number; // minutes
   cookTime: number; // minutes
   servings: number;
-  difficulty: "easy" | "medium" | "hard";
+  difficulty: 'easy' | 'medium' | 'hard';
   ingredients: Ingredient[];
   instructions: string[];
   tags: string[];
