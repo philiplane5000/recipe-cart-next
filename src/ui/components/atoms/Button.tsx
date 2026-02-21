@@ -5,28 +5,31 @@ import {
   ButtonProps as RACButtonProps,
 } from 'react-aria-components';
 import { tv } from 'tailwind-variants';
-// import { focusRing } from "./utils";
 
 export interface ButtonProps extends RACButtonProps {
   /** @default 'primary' */
-  variant?: 'primary' | 'secondary' | 'destructive' | 'quiet';
+  variant?: 'primary' | 'secondary' | 'coral' | 'blush' | 'destructive' | 'quiet';
 }
 
 const button = tv({
-  //   extend: focusRing,
-  base: 'relative inline-flex items-center justify-center gap-2 border border-transparent dark:border-white/10 h-9 box-border px-3.5 py-0 [&:has(>svg:only-child)]:px-0 [&:has(>svg:only-child)]:h-8 [&:has(>svg:only-child)]:w-8 font-sans text-sm text-center transition rounded-lg cursor-default [-webkit-tap-highlight-color:transparent]',
+  base: 'relative inline-flex items-center justify-center gap-2 border border-transparent h-9 box-border px-3.5 py-0 [&:has(>svg:only-child)]:px-0 [&:has(>svg:only-child)]:h-8 [&:has(>svg:only-child)]:w-8 font-sans text-sm text-center transition rounded-lg cursor-default [-webkit-tap-highlight-color:transparent]',
   variants: {
     variant: {
       primary:
-        'bg-indigo-600 hover:bg-indigo-700 pressed:bg-indigo-800 text-white',
+        'bg-primary-500 hover:bg-primary-600 pressed:bg-primary-700 text-cream-50',
       secondary:
-        'border-black/10 bg-neutral-50 hover:bg-neutral-100 pressed:bg-neutral-200 text-neutral-800 dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:pressed:bg-neutral-500 dark:text-neutral-100',
-      destructive: 'bg-red-700 hover:bg-red-800 pressed:bg-red-900 text-white',
+        'bg-secondary-400 hover:bg-secondary-500 pressed:bg-secondary-600 text-cream-50',
+      coral:
+        'bg-coral-500 hover:bg-coral-600 pressed:bg-coral-700 text-cream-50',
+      blush:
+        'bg-blush-400 hover:bg-blush-500 pressed:bg-blush-600 text-cream-50',
+      destructive:
+        'bg-red-700 hover:bg-red-800 pressed:bg-red-900 text-white',
       quiet:
-        'border-0 bg-transparent hover:bg-neutral-200 pressed:bg-neutral-300 text-neutral-800 dark:hover:bg-neutral-700 dark:pressed:bg-neutral-600 dark:text-neutral-100',
+        'border-0 bg-transparent hover:bg-cream-200 pressed:bg-cream-300 text-primary-800',
     },
     isDisabled: {
-      true: 'border-transparent dark:border-transparent bg-neutral-100 dark:bg-neutral-800 text-neutral-300 dark:text-neutral-600 forced-colors:text-[GrayText]',
+      true: 'border-transparent opacity-50 cursor-default',
     },
     isPending: {
       true: 'text-transparent',
@@ -39,10 +42,12 @@ const button = tv({
     {
       variant: 'quiet',
       isDisabled: true,
-      class: 'bg-transparent dark:bg-transparent',
+      class: 'bg-transparent',
     },
   ],
 });
+
+const LIGHT_TEXT_VARIANTS = new Set(['secondary', 'quiet']);
 
 export function Button(props: ButtonProps) {
   return (
@@ -61,11 +66,11 @@ export function Button(props: ButtonProps) {
               className="absolute inset-0 flex items-center justify-center"
             >
               <svg
-                className="h-4 w-4 animate-spin text-white"
+                className="h-4 w-4 animate-spin"
                 viewBox="0 0 24 24"
                 stroke={
-                  props.variant === 'secondary' || props.variant === 'quiet'
-                    ? 'light-dark(black, white)'
+                  LIGHT_TEXT_VARIANTS.has(props.variant ?? '')
+                    ? 'black'
                     : 'white'
                 }
               >

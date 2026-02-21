@@ -2,107 +2,81 @@
 @theme {
   --font-sans: var(--font-nunito-sans);
 
-  /* Primary brand colors (Sage Green - #86A69D) */
-  --color-primary-50: #86a69d;
-  --color-primary-100: #86a69d;
-  --color-primary-200: #86a69d;
-  --color-primary-300: #86a69d;
-  --color-primary-400: #86a69d;
-  --color-primary-500: #86a69d;
-  --color-primary-600: #86a69d;
-  --color-primary-700: #647b75;
-  --color-primary-800: #485954;
-  --color-primary-900: #2d3734;
+  /* "Quiet" Fluid Scale (Major Second - 1.125 Ratio) */
+  /* Optimized for Mobile-First Minimalism */
+  --font-size-xs: clamp(0.875rem, 0.85rem + 0.1vw, 0.95rem); /* 14px -> 15px */
+  --font-size-base: clamp(1rem, 0.98rem + 0.15vw, 1.0625rem); /* 16px -> 17px */
 
-  /* Secondary colors (Golden Orange - #F2B263) */
-  --color-secondary-50: #f2b263;
-  --color-secondary-100: #f2b263;
-  --color-secondary-200: #f2b263;
-  --color-secondary-300: #f2b263;
-  --color-secondary-400: #f2b263;
-  --color-secondary-500: #f2b263;
-  --color-secondary-600: #f2b263;
-  --color-secondary-700: #f2b263;
-  --color-secondary-800: #f2b263;
-  --color-secondary-900: #f2b263;
+  --font-size-h6: clamp(1rem, 0.98rem + 0.15vw, 1.1rem);
+  --font-size-h5: clamp(1.125rem, 1.1rem + 0.2vw, 1.2rem);
+  --font-size-h4: clamp(1.266rem, 1.2rem + 0.4vw, 1.4rem);
+  --font-size-h3: clamp(1.424rem, 1.35rem + 0.6vw, 1.6rem);
+  --font-size-h2: clamp(1.602rem, 1.5rem + 0.9vw, 1.9rem);
+  --font-size-h1: clamp(
+    1.802rem,
+    1.7rem + 1.2vw,
+    2.25rem
+  ); /* Max ~36px on desktop */
 
-  /* Accent colors (Coral - #F28585 and Blush - #F2C6C2) */
-  --color-accent-50: #f2c6c2;
-  --color-accent-100: #f2c6c2;
-  --color-accent-200: #f2c6c2;
-  --color-accent-300: #f2c6c2;
-  --color-accent-400: #f28585;
-  --color-accent-500: #f28585;
-  --color-accent-600: #f28585;
-  --color-accent-700: #f28585;
-  --color-accent-800: #f28585;
-  --color-accent-900: #f28585;
+  /* Primary (Sage Green - #86A69D ≈ oklch(0.68 0.04 175)) */
+  --color-primary-50: oklch(0.97 0.01 175);
+  --color-primary-100: oklch(0.93 0.02 175);
+  --color-primary-200: oklch(0.87 0.03 175);
+  --color-primary-300: oklch(0.8 0.04 175);
+  --color-primary-400: oklch(0.73 0.04 175);
+  --color-primary-500: oklch(0.68 0.04 175); /* ≈ #86A69D */
+  --color-primary-600: oklch(0.58 0.04 175);
+  --color-primary-700: oklch(0.48 0.04 175);
+  --color-primary-800: oklch(0.38 0.03 175);
+  --color-primary-900: oklch(0.28 0.02 175);
 
-  /* Error colors (using standard red scale) */
-  --color-error-50: #fef2f2;
-  --color-error-100: #fee2e2;
-  --color-error-200: #fecaca;
-  --color-error-300: #fca5a5;
-  --color-error-400: #f87171;
-  --color-error-500: #ef4444;
-  --color-error-600: #dc2626;
-  --color-error-700: #b91c1c;
-  --color-error-800: #991b1b;
-  --color-error-900: #7f1d1d;
+  /* Secondary (Golden Orange - #F2B263 ≈ oklch(0.79 0.14 75)) */
+  --color-secondary-50: oklch(0.97 0.02 75);
+  --color-secondary-100: oklch(0.93 0.05 75);
+  --color-secondary-200: oklch(0.87 0.09 75);
+  --color-secondary-300: oklch(0.82 0.12 75);
+  --color-secondary-400: oklch(0.79 0.14 75); /* ≈ #F2B263 */
+  --color-secondary-500: oklch(0.68 0.14 75);
+  --color-secondary-600: oklch(0.58 0.13 75);
+  --color-secondary-700: oklch(0.48 0.11 75);
+  --color-secondary-800: oklch(0.38 0.08 75);
+  --color-secondary-900: oklch(0.28 0.06 75);
 
-  /* Success colors (using standard green scale) */
-  --color-success-50: #f0fdf4;
-  --color-success-100: #dcfce7;
-  --color-success-200: #bbf7d0;
-  --color-success-300: #86efac;
-  --color-success-400: #4ade80;
-  --color-success-500: #22c55e;
-  --color-success-600: #16a34a;
-  --color-success-700: #15803d;
-  --color-success-800: #166534;
-  --color-success-900: #14532d;
+  /* Cream (#F2E8DF ≈ oklch(0.93 0.02 70)) */
+  --color-cream-50: oklch(0.98 0.005 70);
+  --color-cream-100: oklch(0.96 0.01 70);
+  --color-cream-200: oklch(0.93 0.02 70); /* ≈ #F2E8DF */
+  --color-cream-300: oklch(0.88 0.03 70);
+  --color-cream-400: oklch(0.82 0.03 70);
+  --color-cream-500: oklch(0.72 0.03 70);
+  --color-cream-600: oklch(0.62 0.03 70);
+  --color-cream-700: oklch(0.5 0.02 70);
+  --color-cream-800: oklch(0.4 0.02 70);
+  --color-cream-900: oklch(0.3 0.01 70);
 
-  /* Warning colors (using standard yellow/orange scale) */
-  --color-warning-50: #fffbeb;
-  --color-warning-100: #fef3c7;
-  --color-warning-200: #fde68a;
-  --color-warning-300: #fcd34d;
-  --color-warning-400: #fbbf24;
-  --color-warning-500: #f59e0b;
-  --color-warning-600: #d97706;
-  --color-warning-700: #b45309;
-  --color-warning-800: #92400e;
-  --color-warning-900: #78350f;
+  /* Blush Pink (#F2C6C2 ≈ oklch(0.85 0.05 20)) */
+  --color-blush-50: oklch(0.97 0.01 20);
+  --color-blush-100: oklch(0.94 0.02 20);
+  --color-blush-200: oklch(0.9 0.04 20);
+  --color-blush-300: oklch(0.85 0.05 20); /* ≈ #F2C6C2 */
+  --color-blush-400: oklch(0.78 0.08 20);
+  --color-blush-500: oklch(0.68 0.1 20);
+  --color-blush-600: oklch(0.58 0.1 20);
+  --color-blush-700: oklch(0.48 0.08 20);
+  --color-blush-800: oklch(0.38 0.06 20);
+  --color-blush-900: oklch(0.28 0.04 20);
 
-  /* Info colors (using standard blue scale) */
-  --color-info-50: #eff6ff;
-  --color-info-100: #dbeafe;
-  --color-info-200: #bfdbfe;
-  --color-info-300: #93c5fd;
-  --color-info-400: #60a5fa;
-  --color-info-500: #3b82f6;
-  --color-info-600: #2563eb;
-  --color-info-700: #1d4ed8;
-  --color-info-800: #1e40af;
-  --color-info-900: #1e3a8a;
-
-  /* Neutral/Gray colors for text and UI elements */
-  /* --color-neutral-50: #f9fafb; */
-  /* --color-neutral-100: #f3f4f6; */
-  /* --color-neutral-200: #e5e7eb; */
-  /* --color-neutral-300: #d1d5db; */
-  /* --color-neutral-400: #9ca3af; */
-  /* --color-neutral-500: #6b7280; */
-  /* --color-neutral-600: #4b5563; */
-  /* --color-neutral-700: #374151; */
-  /* --color-neutral-800: #1f2937; */
-  /* --color-neutral-900: #111827; */
-  /* --color-neutral-950: #030712; */
-
-  --color-cream: var(--color-cream);
-  --color-blush: var(--color-blush);
-  --color-dark: #000;
-  --color-light: #fff;
+  /* Coral Red (#F28585 ≈ oklch(0.70 0.14 18)) */
+  --color-coral-50: oklch(0.97 0.01 18);
+  --color-coral-100: oklch(0.93 0.04 18);
+  --color-coral-200: oklch(0.87 0.07 18);
+  --color-coral-300: oklch(0.8 0.11 18);
+  --color-coral-400: oklch(0.75 0.14 18);
+  --color-coral-500: oklch(0.7 0.14 18); /* ≈ #F28585 */
+  --color-coral-600: oklch(0.58 0.13 18);
+  --color-coral-700: oklch(0.48 0.11 18);
+  --color-coral-800: oklch(0.38 0.08 18);
+  --color-coral-900: oklch(0.28 0.05 18);
 
   --breakpoint-sm: 40rem;
   --breakpoint-md: 48rem;
@@ -112,12 +86,66 @@
 }
 
 :root {
-  --background: #fdfcfb;
-  --foreground: #1a201e;
+  --background: #f2e8df;
+  --foreground: #1a1a1a;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
+@layer base {
+  html {
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    color-scheme: light;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    letter-spacing: -0.01em; /* Slight tightening for that premium look */
+  }
+
+  /* Minimalist Heading Defaults */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--foreground);
+    line-height: 1.15;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    /* Optional: Slightly tighter letter spacing for titles */
+    letter-spacing: -0.02em;
+  }
+
+  h1 {
+    font-size: var(--font-size-h1);
+  }
+  h2 {
+    font-size: var(--font-size-h2);
+  }
+  h3 {
+    font-size: var(--font-size-h3);
+  }
+  h4 {
+    font-size: var(--font-size-h4);
+  }
+  h5 {
+    font-size: var(--font-size-h5);
+  }
+  h6 {
+    font-size: var(--font-size-h6);
+  }
+
+  small {
+    font-size: var(--font-size-xs);
+    opacity: 0.8;
+  }
+
+  p {
+    margin-bottom: 1rem;
+  }
 }
