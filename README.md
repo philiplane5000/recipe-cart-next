@@ -84,6 +84,7 @@ cp .env.example .env.local
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Tailwind Variants](https://www.tailwind-variants.org/) - a first-class variant API to compliment Tailwind
 - [React Aria](https://react-aria.adobe.com/)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
 - [MongoDB Atlas Documentation](https://www.mongodb.com/docs/atlas/)
@@ -163,7 +164,3 @@ POST   /api/recipes/import       # Import recipe from URL
 - [ ] Grocery delivery service APIs
 - [ ] Smart kitchen device integration
 - [ ] Third-party fitness app sync
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
