@@ -1,0 +1,80 @@
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": [
+      "schemaVersion",
+      "_id",
+      "createdAt",
+      "description",
+      "ingredients",
+      "name",
+      "servings",
+      "steps"
+    ],
+    "properties": {
+      "_id": {
+        "bsonType": "objectId"
+      },
+      "schemaVersion": {
+        "bsonType": ["int", "double"]
+      },
+      "createdAt": {
+        "bsonType": "date"
+      },
+      "contributorId": {
+        "bsonType": ["string"]
+      },
+      "imageKey": {
+        "bsonType": "string"
+      },
+      "description": {
+        "bsonType": "string"
+      },
+      "ingredients": {
+        "bsonType": "array",
+        "items": {
+          "bsonType": "string"
+        }
+      },
+      "name": {
+        "bsonType": "string"
+      },
+      "nutrition": {
+        "bsonType": "array",
+        "items": {
+          "bsonType": ["int", "double"]
+        }
+      },
+      "preparationTimes": {
+        "bsonType": "object",
+        "properties": {
+          "cook": {
+            "bsonType": ["int", "double"]
+          },
+          "prep": {
+            "bsonType": ["int", "double"]
+          },
+          "total": {
+            "bsonType": ["int", "double"]
+          }
+        },
+        "required": ["cook", "prep", "total"]
+      },
+      "servings": {
+        "bsonType": "double"
+      },
+      "steps": {
+        "bsonType": "array",
+        "items": {
+          "bsonType": "string"
+        }
+      },
+      "tags": {
+        "bsonType": "array",
+        "items": {
+          "bsonType": "string"
+        }
+      }
+    }
+  }
+}

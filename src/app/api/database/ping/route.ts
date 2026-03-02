@@ -1,8 +1,9 @@
-import client from '@/lib/mongodb';
+import client from '@/lib/db/client';
 
 export async function GET() {
   try {
-    const result = await client.db('admin').command({ ping: 1 });
+    const conn = await client();
+    const result = await conn.db('admin').command({ ping: 1 });
 
     if (result.ok === 1) {
       console.log('Pinged your deployment. Connection successful!');

@@ -127,7 +127,7 @@ interface Ingredient {
 
 ```
 GET    /api/recipes              # Get all user recipes
-POST   /api/recipes              # Create new recipe
+POST   /api/recipe               # Create new recipe
 GET    /api/recipes/:id          # Get specific recipe
 PUT    /api/recipes/:id          # Update recipe
 DELETE /api/recipes/:id          # Delete recipe
