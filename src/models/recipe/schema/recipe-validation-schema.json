@@ -2,12 +2,12 @@
   "$jsonSchema": {
     "bsonType": "object",
     "required": [
-      "schemaVersion",
       "_id",
       "createdAt",
       "description",
       "ingredients",
       "name",
+      "schemaVersion",
       "servings",
       "steps"
     ],
@@ -15,17 +15,8 @@
       "_id": {
         "bsonType": "objectId"
       },
-      "schemaVersion": {
-        "bsonType": ["int", "double"]
-      },
       "createdAt": {
         "bsonType": "date"
-      },
-      "contributorId": {
-        "bsonType": ["string"]
-      },
-      "imageKey": {
-        "bsonType": "string"
       },
       "description": {
         "bsonType": "string"
@@ -33,10 +24,43 @@
       "ingredients": {
         "bsonType": "array",
         "items": {
-          "bsonType": "string"
+          "bsonType": "object",
+          "required": ["name", "quantity", "unit"],
+          "properties": {
+            "name": {
+              "bsonType": "string"
+            },
+            "quantity": {
+              "bsonType": ["int", "double"]
+            },
+            "unit": {
+              "bsonType": "string"
+            },
+            "notes": {
+              "bsonType": "string"
+            }
+          }
         }
       },
       "name": {
+        "bsonType": "string"
+      },
+      "schemaVersion": {
+        "bsonType": ["int", "double"]
+      },
+      "servings": {
+        "bsonType": ["int", "double"]
+      },
+      "steps": {
+        "bsonType": "array",
+        "items": {
+          "bsonType": "string"
+        }
+      },
+      "contributorId": {
+        "bsonType": "string"
+      },
+      "imageKey": {
         "bsonType": "string"
       },
       "nutrition": {
@@ -45,13 +69,10 @@
           "calories": {
             "bsonType": ["int", "double"]
           },
+          "carbohydrates": {
+            "bsonType": ["int", "double"]
+          },
           "fat": {
-            "bsonType": ["int", "double"]
-          },
-          "sugar": {
-            "bsonType": ["int", "double"]
-          },
-          "sodium": {
             "bsonType": ["int", "double"]
           },
           "protein": {
@@ -60,13 +81,17 @@
           "saturatedFat": {
             "bsonType": ["int", "double"]
           },
-          "carbohydrates": {
+          "sodium": {
+            "bsonType": ["int", "double"]
+          },
+          "sugar": {
             "bsonType": ["int", "double"]
           }
         }
       },
       "preparationTimes": {
         "bsonType": "object",
+        "required": ["cook", "prep", "total"],
         "properties": {
           "cook": {
             "bsonType": ["int", "double"]
@@ -77,16 +102,6 @@
           "total": {
             "bsonType": ["int", "double"]
           }
-        },
-        "required": ["cook", "prep", "total"]
-      },
-      "servings": {
-        "bsonType": ["int", "double"]
-      },
-      "steps": {
-        "bsonType": "array",
-        "items": {
-          "bsonType": "string"
         }
       },
       "tags": {

@@ -4,31 +4,38 @@ export const CURRENT_SCHEMA_VERSION = 1;
 
 interface NutritionInfo {
   calories: number;
+  carbohydrates: number;
   fat: number;
-  sugar: number;
-  sodium: number;
   protein: number;
   saturatedFat: number;
-  carbohydrates: number;
+  sodium: number;
+  sugar: number;
+}
+
+export interface Ingredient {
+  name: string;
+  quantity: number;
+  unit: string;
+  notes?: string;
 }
 
 export interface Recipe {
-  schemaVersion: number;
-  name: string;
   description: string;
-  tags?: string[];
-  imageKey?: string; // S3 object key for the recipe's main image
-  preparationTimes?: {
-    prep: number; // in minutes
-    cook: number; // in minutes
-    total: number; // in minutes
-  };
+  ingredients: Ingredient[];
+  name: string;
+  schemaVersion: number;
   servings: number;
+  steps: string[];
   contributorId?: string; // UUID string representing the user who contributed the recipe
+  imageKey?: string; // S3 object key for the recipe's main image
   /** Nutritional information per serving */
   nutrition?: NutritionInfo;
-  steps: string[];
-  ingredients: string[];
+  preparationTimes?: {
+    cook: number; // in minutes
+    prep: number; // in minutes
+    total: number; // in minutes
+  };
+  tags?: string[];
 }
 
 export type RecipeDocument = Recipe & { _id: ObjectId; createdAt: Date };

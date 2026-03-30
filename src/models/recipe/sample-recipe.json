@@ -1,22 +1,19 @@
 {
-  "name": "Classic Chocolate Chip Cookies",
   "description": "A timeless recipe for chewy and delicious chocolate chip cookies with a hint of sea salt. A perfect treat for any occasion.",
-  "tags": ["dessert", "baking", "cookies", "chocolate"],
-  "preparationTimes": {
-    "prep": 15,
-    "cook": 12,
-    "total": 27
-  },
+  "ingredients": [
+    { "name": "all-purpose flour", "quantity": 2.25, "unit": "cups" },
+    { "name": "baking soda", "quantity": 1, "unit": "tsp" },
+    { "name": "salt", "quantity": 1, "unit": "tsp" },
+    { "name": "unsalted butter", "quantity": 1, "unit": "cup", "notes": "softened" },
+    { "name": "granulated sugar", "quantity": 0.75, "unit": "cup" },
+    { "name": "brown sugar", "quantity": 0.75, "unit": "cup", "notes": "packed" },
+    { "name": "eggs", "quantity": 2, "unit": "large" },
+    { "name": "vanilla extract", "quantity": 1, "unit": "tsp" },
+    { "name": "chocolate chips", "quantity": 2, "unit": "cups" }
+  ],
+  "name": "Classic Chocolate Chip Cookies",
+  "schemaVersion": 1,
   "servings": 12,
-  "nutrition": {
-    "calories": 180,
-    "fat": 9,
-    "sugar": 18,
-    "sodium": 110,
-    "protein": 2,
-    "saturatedFat": 5,
-    "carbohydrates": 23
-  },
   "steps": [
     "Preheat oven to 375°F (190°C).",
     "In a medium bowl, whisk together flour, baking soda, and salt.",
@@ -28,15 +25,19 @@
     "Bake for 10-12 minutes, or until the edges are golden brown.",
     "Let cool on the baking sheet for a few minutes before transferring to a wire rack."
   ],
-  "ingredients": [
-    "all-purpose flour",
-    "baking soda",
-    "salt",
-    "unsalted butter",
-    "granulated sugar",
-    "brown sugar",
-    "eggs",
-    "vanilla extract",
-    "chocolate chips"
-  ]
+  "nutrition": {
+    "calories": 180,
+    "carbohydrates": 23,
+    "fat": 9,
+    "protein": 2,
+    "saturatedFat": 5,
+    "sodium": 110,
+    "sugar": 18
+  },
+  "preparationTimes": {
+    "cook": 12,
+    "prep": 15,
+    "total": 27
+  },
+  "tags": ["dessert", "baking", "cookies", "chocolate"]
 }
