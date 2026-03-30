@@ -6,7 +6,7 @@ A modern web application that simplifies meal planning by allowing users to cura
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 24+
 - Package manager (npm, yarn, or pnpm)
 - MongoDB Atlas account (for data storage)
 
@@ -50,8 +50,8 @@ npm run build
 ### Environment Configuration
 
 ```bash
-cp .env.example .env.local
-# Edit .env.local with your MongoDB Atlas connection string and other config
+cp .env.local.example .env.local
+# Edit .env.local with your MongoDB connection string and credentials
 ```
 
 ## Tech Stack
@@ -93,31 +93,42 @@ cp .env.example .env.local
 
 ### Core Types (TypeScript)
 
-```typescript
-// Recipe Management Types
-interface Recipe {
-  id: string;
-  title: string;
-  description?: string;
-  imageUrl?: string;
-  prepTime: number; // minutes
-  cookTime: number; // minutes
-  servings: number;
-  difficulty: 'easy' | 'medium' | 'hard';
-  ingredients: Ingredient[];
-  instructions: string[];
-  tags: string[];
-  rating?: 1 | 2 | 3 | 4 | 5;
-  author: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+> Fields are ordered required-first then optional, with each group sorted alphabetically.
 
+```typescript
 interface Ingredient {
-  id: string;
   name: string;
   quantity: number;
   unit: string;
+  notes?: string;
+}
+
+interface NutritionInfo {
+  calories: number;
+  carbohydrates: number;
+  fat: number;
+  protein: number;
+  saturatedFat: number;
+  sodium: number;
+  sugar: number;
+}
+
+interface Recipe {
+  description: string;
+  ingredients: Ingredient[];
+  name: string;
+  schemaVersion: number;
+  servings: number;
+  steps: string[];
+  contributorId?: string;
+  imageKey?: string;
+  nutrition?: NutritionInfo;
+  preparationTimes?: {
+    cook: number;  // in minutes
+    prep: number;  // in minutes
+    total: number; // in minutes
+  };
+  tags?: string[];
 }
 ```
 
