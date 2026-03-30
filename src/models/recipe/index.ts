@@ -1,5 +1,17 @@
 import type { ObjectId } from 'mongodb';
 
+export const CURRENT_SCHEMA_VERSION = 1;
+
+interface NutritionInfo {
+  calories: number;
+  fat: number;
+  sugar: number;
+  sodium: number;
+  protein: number;
+  saturatedFat: number;
+  carbohydrates: number;
+}
+
 export interface Recipe {
   schemaVersion: number;
   name: string;
@@ -13,13 +25,10 @@ export interface Recipe {
   };
   servings: number;
   contributorId?: string; // UUID string representing the user who contributed the recipe
-  /**
-   * Nutritional information per serving in the following order:
-   * [calories, fat, sugar, sodium, protein, saturatedFat, carbohydrates]
-   */
-  nutrition?: number[];
+  /** Nutritional information per serving */
+  nutrition?: NutritionInfo;
   steps: string[];
   ingredients: string[];
 }
 
-export type RecipeDocument = Recipe & { _id: ObjectId };
+export type RecipeDocument = Recipe & { _id: ObjectId; createdAt: Date };

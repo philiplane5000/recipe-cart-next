@@ -2,9 +2,9 @@ import { submit } from '@/lib/db/submit';
 
 export async function POST(request: Request) {
   try {
-    const result = await submit(request);
+    const body = await request.json();
+    const result = await submit(body);
     return Response.json({ id: result.insertedId }, { status: 201 });
-    // return Response.json({ success: true });
   } catch (reason) {
     const message =
       reason instanceof Error ? reason.message : 'Unexpected error';

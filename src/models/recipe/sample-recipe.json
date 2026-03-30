@@ -1,0 +1,42 @@
+{
+  "name": "Classic Chocolate Chip Cookies",
+  "description": "A timeless recipe for chewy and delicious chocolate chip cookies with a hint of sea salt. A perfect treat for any occasion.",
+  "tags": ["dessert", "baking", "cookies", "chocolate"],
+  "preparationTimes": {
+    "prep": 15,
+    "cook": 12,
+    "total": 27
+  },
+  "servings": 12,
+  "nutrition": {
+    "calories": 180,
+    "fat": 9,
+    "sugar": 18,
+    "sodium": 110,
+    "protein": 2,
+    "saturatedFat": 5,
+    "carbohydrates": 23
+  },
+  "steps": [
+    "Preheat oven to 375°F (190°C).",
+    "In a medium bowl, whisk together flour, baking soda, and salt.",
+    "In a large bowl, beat butter, granulated sugar, and brown sugar with a mixer until creamy.",
+    "Beat in eggs one at a time, then stir in vanilla extract.",
+    "Gradually add the dry ingredients to the wet ingredients and mix until just combined.",
+    "Fold in chocolate chips.",
+    "Drop rounded tablespoons of dough onto ungreased baking sheets.",
+    "Bake for 10-12 minutes, or until the edges are golden brown.",
+    "Let cool on the baking sheet for a few minutes before transferring to a wire rack."
+  ],
+  "ingredients": [
+    "all-purpose flour",
+    "baking soda",
+    "salt",
+    "unsalted butter",
+    "granulated sugar",
+    "brown sugar",
+    "eggs",
+    "vanilla extract",
+    "chocolate chips"
+  ]
+}

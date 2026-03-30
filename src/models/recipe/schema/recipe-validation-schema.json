@@ -40,9 +40,29 @@
         "bsonType": "string"
       },
       "nutrition": {
-        "bsonType": "array",
-        "items": {
-          "bsonType": ["int", "double"]
+        "bsonType": "object",
+        "properties": {
+          "calories": {
+            "bsonType": ["int", "double"]
+          },
+          "fat": {
+            "bsonType": ["int", "double"]
+          },
+          "sugar": {
+            "bsonType": ["int", "double"]
+          },
+          "sodium": {
+            "bsonType": ["int", "double"]
+          },
+          "protein": {
+            "bsonType": ["int", "double"]
+          },
+          "saturatedFat": {
+            "bsonType": ["int", "double"]
+          },
+          "carbohydrates": {
+            "bsonType": ["int", "double"]
+          }
         }
       },
       "preparationTimes": {
@@ -61,7 +81,7 @@
         "required": ["cook", "prep", "total"]
       },
       "servings": {
-        "bsonType": "double"
+        "bsonType": ["int", "double"]
       },
       "steps": {
         "bsonType": "array",
