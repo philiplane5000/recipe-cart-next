@@ -1,5 +1,9 @@
-import { submit } from '@/lib/db/submit';
+import { submit } from '@/lib/db/recipes';
 
+/**
+ * Creates a new recipe in the recipes collection
+ * @param request
+ */
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -10,6 +14,6 @@ export async function POST(request: Request) {
       reason instanceof Error ? reason.message : 'Unexpected error';
     console.error(message);
 
-    return new Response(message, { status: 500 });
+    return Response.json({ error: message }, { status: 500 });
   }
 }
