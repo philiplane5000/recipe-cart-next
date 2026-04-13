@@ -18,7 +18,6 @@
     2.25rem
   ); /* Max ~36px on desktop */
 
-  /* Primary (Sage Green - #86A69D ≈ oklch(0.68 0.04 175)) */
   --color-primary-50: oklch(0.97 0.01 175);
   --color-primary-100: oklch(0.93 0.02 175);
   --color-primary-200: oklch(0.87 0.03 175);
@@ -42,6 +41,30 @@
   --color-secondary-800: oklch(0.38 0.08 75);
   --color-secondary-900: oklch(0.28 0.06 75);
 
+  /* Tertiary (Blush Pink - #E8B0B0 ≈ oklch(0.79 0.07 18)) */
+  --color-tertiary-50: oklch(0.97 0.01 18);
+  --color-tertiary-100: oklch(0.94 0.03 18);
+  --color-tertiary-200: oklch(0.88 0.05 18);
+  --color-tertiary-300: oklch(0.83 0.07 18);
+  --color-tertiary-400: oklch(0.79 0.07 18); /* ≈ #E8B0B0 */
+  --color-tertiary-500: oklch(0.68 0.09 18);
+  --color-tertiary-600: oklch(0.57 0.1 18);
+  --color-tertiary-700: oklch(0.46 0.1 18);
+  --color-tertiary-800: oklch(0.35 0.08 18);
+  --color-tertiary-900: oklch(0.24 0.06 18);
+
+  /* Neutral (Warm Off-White - #F9F7F2 ≈ oklch(0.98 0.005 80)) */
+  --color-neutral-50: oklch(0.98 0.005 80); /* ≈ #F9F7F2 */
+  --color-neutral-100: oklch(0.95 0.005 80);
+  --color-neutral-200: oklch(0.88 0.005 80);
+  --color-neutral-300: oklch(0.8 0.005 80);
+  --color-neutral-400: oklch(0.7 0.005 80);
+  --color-neutral-500: oklch(0.6 0.005 80);
+  --color-neutral-600: oklch(0.5 0.005 80);
+  --color-neutral-700: oklch(0.4 0.005 80);
+  --color-neutral-800: oklch(0.3 0.005 80);
+  --color-neutral-900: oklch(0.18 0.005 80);
+
   /* Cream (#F2E8DF ≈ oklch(0.93 0.02 70)) */
   --color-cream-50: oklch(0.98 0.005 70);
   --color-cream-100: oklch(0.96 0.01 70);
@@ -53,18 +76,6 @@
   --color-cream-700: oklch(0.5 0.02 70);
   --color-cream-800: oklch(0.4 0.02 70);
   --color-cream-900: oklch(0.3 0.01 70);
-
-  /* Blush Pink (#F2C6C2 ≈ oklch(0.85 0.05 20)) */
-  --color-blush-50: oklch(0.97 0.01 20);
-  --color-blush-100: oklch(0.94 0.02 20);
-  --color-blush-200: oklch(0.9 0.04 20);
-  --color-blush-300: oklch(0.85 0.05 20); /* ≈ #F2C6C2 */
-  --color-blush-400: oklch(0.78 0.08 20);
-  --color-blush-500: oklch(0.68 0.1 20);
-  --color-blush-600: oklch(0.58 0.1 20);
-  --color-blush-700: oklch(0.48 0.08 20);
-  --color-blush-800: oklch(0.38 0.06 20);
-  --color-blush-900: oklch(0.28 0.04 20);
 
   /* Coral Red (#F28585 ≈ oklch(0.70 0.14 18)) */
   --color-coral-50: oklch(0.97 0.01 18);
@@ -86,8 +97,26 @@
 }
 
 :root {
-  --background: #f2e8df;
-  --foreground: #1a1a1a;
+  /* Backgrounds */
+  --color-background: var(--color-neutral-50);
+  --color-surface: var(--color-neutral-50);
+  --color-surface-raised: var(--color-neutral-100);
+  --color-callout: var(--color-primary-50);
+
+  /* Borders */
+  --color-border: var(--color-neutral-200);
+  --color-border-subtle: var(--color-neutral-100);
+
+  /* Text */
+  --color-text: var(--color-primary-900);
+  --color-text-secondary: var(--color-neutral-600);
+  --color-text-muted: var(--color-neutral-300);
+
+  /* Interactive */
+  --color-cta: var(--color-primary-700);
+  --color-badge-seasonal: var(--color-tertiary-300);
+  --color-badge-level: var(--color-primary-200);
+  --color-star: var(--color-secondary-400);
 }
 
 @layer base {
@@ -98,8 +127,8 @@
   }
 
   body {
-    background: var(--background);
-    color: var(--foreground);
+    background: var(--color-background);
+    color: var(--color-text);
     font-family: var(--font-sans);
     font-size: var(--font-size-base);
     line-height: 1.6;
@@ -113,7 +142,7 @@
   h4,
   h5,
   h6 {
-    color: var(--foreground);
+    color: var(--color-text);
     line-height: 1.15;
     font-weight: 700;
     margin-bottom: 0.75rem;
