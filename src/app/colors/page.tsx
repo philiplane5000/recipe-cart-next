@@ -113,6 +113,108 @@ export default function ColorSwatches() {
           </div>
         </section>
 
+        {/* Tertiary - Blush Pink */}
+        <section>
+          <h2 className="text-primary-600 mb-3 text-xs tracking-widest uppercase">
+            Tertiary &mdash; Blush Pink
+          </h2>
+          <div className="grid grid-cols-10 gap-1.5">
+            <div className="space-y-2">
+              <div className="bg-tertiary-50 ring-tertiary-200/50 aspect-square rounded-lg ring-1" />
+              <p className="text-primary-700 text-center text-[10px]">50</p>
+            </div>
+            <div className="space-y-2">
+              <div className="bg-tertiary-100 aspect-square rounded-lg" />
+              <p className="text-primary-700 text-center text-[10px]">100</p>
+            </div>
+            <div className="space-y-2">
+              <div className="bg-tertiary-200 aspect-square rounded-lg" />
+              <p className="text-primary-700 text-center text-[10px]">200</p>
+            </div>
+            <div className="space-y-2">
+              <div className="bg-tertiary-300 aspect-square rounded-lg" />
+              <p className="text-primary-700 text-center text-[10px]">300</p>
+            </div>
+            <div className="space-y-2">
+              <div className="bg-tertiary-400 ring-tertiary-600/30 ring-offset-cream-50 aspect-square rounded-lg ring-2 ring-offset-2" />
+              <p className="text-primary-700 text-center text-[10px] font-bold">
+                400
+              </p>
+            </div>
+            <div className="space-y-2">
+              <div className="bg-tertiary-500 aspect-square rounded-lg" />
+              <p className="text-primary-700 text-center text-[10px]">500</p>
+            </div>
+            <div className="space-y-2">
+              <div className="bg-tertiary-600 aspect-square rounded-lg" />
+              <p className="text-cream-300 text-center text-[10px]">600</p>
+            </div>
+            <div className="space-y-2">
+              <div className="bg-tertiary-700 aspect-square rounded-lg" />
+              <p className="text-cream-300 text-center text-[10px]">700</p>
+            </div>
+            <div className="space-y-2">
+              <div className="bg-tertiary-800 aspect-square rounded-lg" />
+              <p className="text-cream-300 text-center text-[10px]">800</p>
+            </div>
+            <div className="space-y-2">
+              <div className="bg-tertiary-900 aspect-square rounded-lg" />
+              <p className="text-cream-300 text-center text-[10px]">900</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Neutral - Warm Gray */}
+        <section>
+          <h2 className="text-primary-600 mb-3 text-xs tracking-widest uppercase">
+            Neutral
+          </h2>
+          <div className="grid grid-cols-10 gap-1.5">
+            <div className="space-y-2">
+              <div className="aspect-square rounded-lg bg-neutral-50 ring-1 ring-neutral-200/60" />
+              <p className="text-primary-700 text-center text-[10px] font-bold">
+                50
+              </p>
+            </div>
+            <div className="space-y-2">
+              <div className="aspect-square rounded-lg bg-neutral-100 ring-1 ring-neutral-300/40" />
+              <p className="text-primary-700 text-center text-[10px]">100</p>
+            </div>
+            <div className="space-y-2">
+              <div className="aspect-square rounded-lg bg-neutral-200" />
+              <p className="text-primary-700 text-center text-[10px]">200</p>
+            </div>
+            <div className="space-y-2">
+              <div className="aspect-square rounded-lg bg-neutral-300" />
+              <p className="text-primary-700 text-center text-[10px]">300</p>
+            </div>
+            <div className="space-y-2">
+              <div className="aspect-square rounded-lg bg-neutral-400" />
+              <p className="text-primary-700 text-center text-[10px]">400</p>
+            </div>
+            <div className="space-y-2">
+              <div className="aspect-square rounded-lg bg-neutral-500" />
+              <p className="text-primary-700 text-center text-[10px]">500</p>
+            </div>
+            <div className="space-y-2">
+              <div className="aspect-square rounded-lg bg-neutral-600" />
+              <p className="text-cream-300 text-center text-[10px]">600</p>
+            </div>
+            <div className="space-y-2">
+              <div className="aspect-square rounded-lg bg-neutral-700" />
+              <p className="text-cream-300 text-center text-[10px]">700</p>
+            </div>
+            <div className="space-y-2">
+              <div className="aspect-square rounded-lg bg-neutral-800" />
+              <p className="text-cream-300 text-center text-[10px]">800</p>
+            </div>
+            <div className="space-y-2">
+              <div className="aspect-square rounded-lg bg-neutral-900" />
+              <p className="text-cream-300 text-center text-[10px]">900</p>
+            </div>
+          </div>
+        </section>
+
         {/* Cream */}
         <section>
           <h2 className="text-primary-600 mb-3 text-xs tracking-widest uppercase">
@@ -159,57 +261,6 @@ export default function ColorSwatches() {
             </div>
             <div className="space-y-2">
               <div className="bg-cream-900 aspect-square rounded-lg" />
-              <p className="text-cream-300 text-center text-[10px]">900</p>
-            </div>
-          </div>
-        </section>
-
-        {/* Blush Pink */}
-        <section>
-          <h2 className="text-primary-600 mb-3 text-xs tracking-widest uppercase">
-            Blush Pink
-          </h2>
-          <div className="grid grid-cols-10 gap-1.5">
-            <div className="space-y-2">
-              <div className="bg-blush-50 ring-blush-200/50 aspect-square rounded-lg ring-1" />
-              <p className="text-primary-700 text-center text-[10px]">50</p>
-            </div>
-            <div className="space-y-2">
-              <div className="bg-blush-100 aspect-square rounded-lg" />
-              <p className="text-primary-700 text-center text-[10px]">100</p>
-            </div>
-            <div className="space-y-2">
-              <div className="bg-blush-200 aspect-square rounded-lg" />
-              <p className="text-primary-700 text-center text-[10px]">200</p>
-            </div>
-            <div className="space-y-2">
-              <div className="bg-blush-300 ring-blush-500/30 ring-offset-cream-50 aspect-square rounded-lg ring-2 ring-offset-2" />
-              <p className="text-primary-700 text-center text-[10px] font-bold">
-                300
-              </p>
-            </div>
-            <div className="space-y-2">
-              <div className="bg-blush-400 aspect-square rounded-lg" />
-              <p className="text-primary-700 text-center text-[10px]">400</p>
-            </div>
-            <div className="space-y-2">
-              <div className="bg-blush-500 aspect-square rounded-lg" />
-              <p className="text-primary-700 text-center text-[10px]">500</p>
-            </div>
-            <div className="space-y-2">
-              <div className="bg-blush-600 aspect-square rounded-lg" />
-              <p className="text-cream-300 text-center text-[10px]">600</p>
-            </div>
-            <div className="space-y-2">
-              <div className="bg-blush-700 aspect-square rounded-lg" />
-              <p className="text-cream-300 text-center text-[10px]">700</p>
-            </div>
-            <div className="space-y-2">
-              <div className="bg-blush-800 aspect-square rounded-lg" />
-              <p className="text-cream-300 text-center text-[10px]">800</p>
-            </div>
-            <div className="space-y-2">
-              <div className="bg-blush-900 aspect-square rounded-lg" />
               <p className="text-cream-300 text-center text-[10px]">900</p>
             </div>
           </div>
@@ -289,16 +340,16 @@ export default function ColorSwatches() {
           </div>
 
           {/* Card 2 */}
-          <div className="bg-blush-100 ring-blush-200 rounded-xl p-5 ring-1">
+          <div className="bg-tertiary-100 ring-tertiary-200 rounded-xl p-5 ring-1">
             <div className="bg-coral-500 mb-3 h-3 w-16 rounded-full" />
-            <div className="bg-blush-300 mb-2 h-2 w-full rounded-full" />
-            <div className="bg-blush-300 mb-4 h-2 w-3/5 rounded-full" />
+            <div className="bg-tertiary-300 mb-2 h-2 w-full rounded-full" />
+            <div className="bg-tertiary-300 mb-4 h-2 w-3/5 rounded-full" />
             <div className="flex gap-2">
               <div className="bg-coral-500 flex h-7 items-center rounded-md px-3">
                 <span className="text-cream-50 text-[10px]">Coral</span>
               </div>
-              <div className="bg-blush-400 flex h-7 items-center rounded-md px-3">
-                <span className="text-cream-50 text-[10px]">Blush</span>
+              <div className="bg-tertiary-400 flex h-7 items-center rounded-md px-3">
+                <span className="text-cream-50 text-[10px]">Tertiary</span>
               </div>
             </div>
           </div>
