@@ -101,18 +101,30 @@ export default function Typography() {
         <Button variant="primary">Primary</Button>
         <Button variant="secondary">Secondary</Button>
         <Button variant="coral">Coral</Button>
-        <Button variant="blush">Blush</Button>
+        <Button variant="tertiary">Blush</Button>
         <Button variant="destructive">Destructive</Button>
         <Button variant="quiet">Quiet</Button>
       </section>
 
       <section className="mt-4 flex flex-wrap gap-2">
-        <Button variant="primary" isDisabled>Disabled Primary</Button>
-        <Button variant="secondary" isDisabled>Disabled Secondary</Button>
-        <Button variant="coral" isDisabled>Disabled Coral</Button>
-        <Button variant="blush" isDisabled>Disabled Blush</Button>
-        <Button variant="destructive" isDisabled>Disabled Destructive</Button>
-        <Button variant="quiet" isDisabled>Disabled Quiet</Button>
+        <Button variant="primary" isDisabled>
+          Disabled Primary
+        </Button>
+        <Button variant="secondary" isDisabled>
+          Disabled Secondary
+        </Button>
+        <Button variant="coral" isDisabled>
+          Disabled Coral
+        </Button>
+        <Button variant="tertiary" isDisabled>
+          Disabled Blush
+        </Button>
+        <Button variant="destructive" isDisabled>
+          Disabled Destructive
+        </Button>
+        <Button variant="quiet" isDisabled>
+          Disabled Quiet
+        </Button>
       </section>
     </div>
   );
