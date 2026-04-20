@@ -5,6 +5,8 @@ import { ClientProviders } from './provider';
 import { nunitoSans } from './fonts';
 import './globals.css';
 
+import { MainNavigation } from '@/ui/components/organisms/MainNavigation';
+
 export const metadata: Metadata = {
   title: 'Recipe Cart',
   description:
@@ -21,7 +23,13 @@ export default async function RootLayout({
   return (
     <html lang={lang} dir={isRTL(lang) ? 'rtl' : 'ltr'}>
       <body className={`${nunitoSans.variable} antialiased`}>
-        <ClientProviders lang={lang}>{children}</ClientProviders>
+        <header className="border-secondary-50 bg-surface h-18 w-full items-center border-b">
+          <MainNavigation />
+        </header>
+        <main>
+          <ClientProviders lang={lang}>{children}</ClientProviders>
+        </main>
+        <footer></footer>
       </body>
     </html>
   );
