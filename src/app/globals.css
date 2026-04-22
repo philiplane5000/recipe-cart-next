@@ -4,8 +4,8 @@
 
   /* "Quiet" Fluid Scale (Major Second - 1.125 Ratio) */
   /* Optimized for Mobile-First Minimalism */
-  --text-xs: clamp(0.875rem, 0.85rem + 0.1vw, 0.95rem); /* 14px -> 15px */
-  --text-base: clamp(1rem, 0.98rem + 0.15vw, 1.0625rem); /* 16px -> 17px */
+  --text-xs: clamp(0.75rem, 0.725rem + 0.1vw, 0.875rem); /* 12px -> 14px */
+  --text-base: 1rem;
 
   --text-h6: clamp(1rem, 0.98rem + 0.15vw, 1.1rem);
   --text-h5: clamp(1.125rem, 1.1rem + 0.2vw, 1.2rem);
@@ -175,7 +175,6 @@
 
   small {
     font-size: var(--text-xs);
-    opacity: 0.8;
   }
 
   p {
