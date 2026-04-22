@@ -4,7 +4,7 @@ import { heading } from '@/ui/variants/heading.variants';
 export function Brand() {
   return (
     <Link href="/">
-      <span className={heading({ size: 'h3' })}>The Editorial Kitchen</span>
+      <span className={heading({ size: 'h4' })}>The Editorial Kitchen</span>
     </Link>
   );
 }
