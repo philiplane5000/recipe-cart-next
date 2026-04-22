@@ -6,6 +6,7 @@ import { nunitoSans } from './fonts';
 import './globals.css';
 
 import { MainNavigation } from '@/ui/components/organisms/MainNavigation';
+import { SiteFooter } from '@/ui/components/organisms/SiteFooter';
 
 export const metadata: Metadata = {
   title: 'Recipe Cart',
@@ -23,13 +24,17 @@ export default async function RootLayout({
   return (
     <html lang={lang} dir={isRTL(lang) ? 'rtl' : 'ltr'}>
       <body className={`${nunitoSans.variable} antialiased`}>
-        <header className="border-secondary-50 bg-surface h-18 w-full items-center border-b">
+        <header className="bg-surface h-18 w-full items-center border-b border-neutral-100 px-5">
           <MainNavigation />
         </header>
+
         <main>
           <ClientProviders lang={lang}>{children}</ClientProviders>
         </main>
-        <footer></footer>
+
+        <footer className="bg-surface h-18 w-full border-t border-neutral-100 px-5">
+          <SiteFooter />
+        </footer>
       </body>
     </html>
   );
