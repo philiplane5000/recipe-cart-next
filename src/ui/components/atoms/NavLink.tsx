@@ -16,7 +16,7 @@ export function NavLink({ href, children }: NavLinkProps) {
   return (
     <Link
       href={href}
-      className={`border-b-2 text-sm font-semibold ${
+      className={`border-b-2 text-base font-semibold ${
         isActive
           ? 'text-cta border-cta border-b-2'
           : 'border-transparent text-neutral-600 hover:opacity-80'
