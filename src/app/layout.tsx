@@ -24,15 +24,15 @@ export default async function RootLayout({
   return (
     <html lang={lang} dir={isRTL(lang) ? 'rtl' : 'ltr'}>
       <body className={`${nunitoSans.variable} antialiased`}>
-        <header className="bg-surface h-18 w-full items-center border-b border-neutral-100 px-5">
+        <header className="border-line-subtle h-20 w-full border-b px-2">
           <MainNavigation />
         </header>
 
-        <main>
+        <main className="mx-auto max-w-7xl px-2">
           <ClientProviders lang={lang}>{children}</ClientProviders>
         </main>
 
-        <footer className="bg-surface h-18 w-full border-t border-neutral-100 px-5">
+        <footer className="border-line-subtle h-20 w-full border-t px-2">
           <SiteFooter />
         </footer>
       </body>

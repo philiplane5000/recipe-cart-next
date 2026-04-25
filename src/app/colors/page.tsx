@@ -1,6 +1,6 @@
 export default function ColorSwatches() {
   return (
-    <div className="bg-cream-50 min-h-screen p-8 font-mono text-sm">
+    <div className="p-8 font-mono text-sm">
       <header className="mb-12">
         <h1 className="text-primary-800 mb-2 text-3xl font-light tracking-tight">
           Color System
