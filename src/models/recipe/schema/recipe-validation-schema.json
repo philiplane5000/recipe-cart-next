@@ -9,7 +9,8 @@
       "name",
       "schemaVersion",
       "servings",
-      "steps"
+      "steps",
+      "visibility"
     ],
     "properties": {
       "_id": {
@@ -57,11 +58,32 @@
           "bsonType": "string"
         }
       },
+      "visibility": {
+        "bsonType": "string",
+        "enum": ["private", "public"]
+      },
       "contributorId": {
         "bsonType": "string"
       },
-      "imageKey": {
-        "bsonType": "string"
+      "image": {
+        "oneOf": [
+          {
+            "bsonType": "object",
+            "required": ["source", "key"],
+            "properties": {
+              "source": { "bsonType": "string", "enum": ["upload"] },
+              "key": { "bsonType": "string" }
+            }
+          },
+          {
+            "bsonType": "object",
+            "required": ["source", "url"],
+            "properties": {
+              "source": { "bsonType": "string", "enum": ["url"] },
+              "url": { "bsonType": "string" }
+            }
+          }
+        ]
       },
       "nutrition": {
         "bsonType": "object",

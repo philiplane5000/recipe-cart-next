@@ -19,6 +19,12 @@ export interface Ingredient {
   notes?: string;
 }
 
+export type RecipeVisibility = 'private' | 'public';
+
+export type RecipeImage =
+  | { source: 'upload'; key: string } // S3 object key for an uploaded image
+  | { source: 'url'; url: string }; // externally hosted image URL (e.g. scraped from another site)
+
 export interface Recipe {
   description: string;
   ingredients: Ingredient[];
@@ -26,8 +32,9 @@ export interface Recipe {
   schemaVersion: number;
   servings: number;
   steps: string[];
+  visibility: RecipeVisibility;
   contributorId?: string; // UUID string representing the user who contributed the recipe
-  imageKey?: string; // S3 object key for the recipe's main image
+  image?: RecipeImage;
   /** Nutritional information per serving */
   nutrition?: NutritionInfo;
   preparationTimes?: {
