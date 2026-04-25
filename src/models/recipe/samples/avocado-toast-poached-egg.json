@@ -1,0 +1,37 @@
+{
+  "name": "Avocado Toast with Poached Egg",
+  "description": "A simple and nutritious breakfast featuring creamy avocado and perfectly poached eggs on toasted bread.",
+  "schemaVersion": 1,
+  "servings": 2,
+  "visibility": "public",
+  "image": {
+    "source": "url",
+    "url": "https://images.unsplash.com/photo-1588137378633-dea1336ce1e2"
+  },
+  "ingredients": [
+    { "name": "bread slices", "quantity": 2, "unit": "pieces" },
+    { "name": "avocado", "quantity": 1, "unit": "whole", "notes": "ripe" },
+    { "name": "eggs", "quantity": 2, "unit": "large" },
+    { "name": "lemon juice", "quantity": 1, "unit": "tsp" },
+    { "name": "salt", "quantity": 0.5, "unit": "tsp" },
+    { "name": "black pepper", "quantity": 0.25, "unit": "tsp" }
+  ],
+  "steps": [
+    "Toast the bread slices until golden brown.",
+    "Mash the avocado with lemon juice, salt, and pepper.",
+    "Poach the eggs in simmering water for 3-4 minutes.",
+    "Spread the avocado mixture on toast.",
+    "Top each slice with a poached egg and serve immediately."
+  ],
+  "nutrition": {
+    "calories": 250,
+    "carbohydrates": 20,
+    "fat": 15,
+    "protein": 10,
+    "saturatedFat": 3,
+    "sodium": 220,
+    "sugar": 2
+  },
+  "preparationTimes": { "prep": 10, "cook": 5, "total": 15 },
+  "tags": ["breakfast", "healthy", "quick"]
+}

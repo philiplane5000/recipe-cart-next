@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "seed": "tsx --env-file=.env --env-file=.env.local src/models/recipe/seedRecipes.ts"
   },
   "dependencies": {
     "lucide-react": "^1.8.0",
@@ -32,6 +33,7 @@
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
