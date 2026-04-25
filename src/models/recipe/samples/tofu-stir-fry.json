@@ -1,0 +1,55 @@
+{
+  "name": "Tofu Stir-Fry",
+  "description": "A quick and flavorful vegetarian stir-fry with crispy tofu and fresh vegetables in a savory sauce.",
+  "schemaVersion": 1,
+  "servings": 4,
+  "visibility": "public",
+  "image": {
+    "source": "url",
+    "url": "https://images.unsplash.com/photo-1512058564366-18510be2db19"
+  },
+  "ingredients": [
+    {
+      "name": "firm tofu",
+      "quantity": 14,
+      "unit": "oz",
+      "notes": "pressed and cubed"
+    },
+    { "name": "broccoli florets", "quantity": 2, "unit": "cups" },
+    { "name": "carrots", "quantity": 1, "unit": "cup", "notes": "sliced" },
+    {
+      "name": "bell pepper",
+      "quantity": 1,
+      "unit": "whole",
+      "notes": "sliced"
+    },
+    { "name": "soy sauce", "quantity": 3, "unit": "tbsp" },
+    { "name": "garlic", "quantity": 2, "unit": "cloves", "notes": "minced" },
+    { "name": "ginger", "quantity": 1, "unit": "tsp", "notes": "grated" },
+    { "name": "olive oil", "quantity": 2, "unit": "tbsp" }
+  ],
+  "steps": [
+    "Press tofu to remove excess moisture, then cut into cubes.",
+    "Heat 1 tablespoon oil in a pan and cook tofu until golden and crispy. Remove and set aside.",
+    "Add remaining oil to the pan and sauté garlic and ginger until fragrant.",
+    "Add vegetables and stir-fry for 5-7 minutes until tender-crisp.",
+    "Return tofu to the pan and add soy sauce.",
+    "Toss everything together and cook for another 2 minutes.",
+    "Serve hot over rice or noodles."
+  ],
+  "nutrition": {
+    "calories": 280,
+    "carbohydrates": 18,
+    "fat": 16,
+    "protein": 20,
+    "saturatedFat": 2,
+    "sodium": 650,
+    "sugar": 6
+  },
+  "preparationTimes": {
+    "prep": 15,
+    "cook": 15,
+    "total": 30
+  },
+  "tags": ["dinner", "vegetarian", "vegan", "quick", "stir-fry"]
+}

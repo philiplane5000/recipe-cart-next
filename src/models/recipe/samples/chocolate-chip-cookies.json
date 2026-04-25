@@ -1,19 +1,34 @@
 {
+  "name": "Classic Chocolate Chip Cookies",
   "description": "A timeless recipe for chewy and delicious chocolate chip cookies with a hint of sea salt. A perfect treat for any occasion.",
+  "schemaVersion": 1,
+  "servings": 12,
+  "visibility": "public",
+  "image": {
+    "source": "url",
+    "url": "https://images.unsplash.com/photo-1499636136210-6f4ee915583e"
+  },
   "ingredients": [
     { "name": "all-purpose flour", "quantity": 2.25, "unit": "cups" },
     { "name": "baking soda", "quantity": 1, "unit": "tsp" },
     { "name": "salt", "quantity": 1, "unit": "tsp" },
-    { "name": "unsalted butter", "quantity": 1, "unit": "cup", "notes": "softened" },
+    {
+      "name": "unsalted butter",
+      "quantity": 1,
+      "unit": "cup",
+      "notes": "softened"
+    },
     { "name": "granulated sugar", "quantity": 0.75, "unit": "cup" },
-    { "name": "brown sugar", "quantity": 0.75, "unit": "cup", "notes": "packed" },
+    {
+      "name": "brown sugar",
+      "quantity": 0.75,
+      "unit": "cup",
+      "notes": "packed"
+    },
     { "name": "eggs", "quantity": 2, "unit": "large" },
     { "name": "vanilla extract", "quantity": 1, "unit": "tsp" },
     { "name": "chocolate chips", "quantity": 2, "unit": "cups" }
   ],
-  "name": "Classic Chocolate Chip Cookies",
-  "schemaVersion": 1,
-  "servings": 12,
   "steps": [
     "Preheat oven to 375°F (190°C).",
     "In a medium bowl, whisk together flour, baking soda, and salt.",
@@ -35,8 +50,8 @@
     "sugar": 18
   },
   "preparationTimes": {
-    "cook": 12,
     "prep": 15,
+    "cook": 12,
     "total": 27
   },
   "tags": ["dessert", "baking", "cookies", "chocolate"]

@@ -1,0 +1,40 @@
+{
+  "name": "Banana Berry Smoothie",
+  "description": "A refreshing smoothie packed with banana, berries, and natural sweetness.",
+  "schemaVersion": 1,
+  "servings": 2,
+  "visibility": "public",
+  "image": {
+    "source": "url",
+    "url": "https://images.unsplash.com/photo-1505252585461-04db1eb84625"
+  },
+  "ingredients": [
+    { "name": "banana", "quantity": 1, "unit": "whole" },
+    {
+      "name": "mixed berries",
+      "quantity": 1,
+      "unit": "cup",
+      "notes": "frozen"
+    },
+    { "name": "milk", "quantity": 1.5, "unit": "cups" },
+    { "name": "honey", "quantity": 1, "unit": "tbsp" },
+    { "name": "ice cubes", "quantity": 1, "unit": "cup" }
+  ],
+  "steps": [
+    "Add all ingredients to a blender.",
+    "Blend until smooth.",
+    "Taste and adjust sweetness if needed.",
+    "Pour into glasses and serve immediately."
+  ],
+  "nutrition": {
+    "calories": 190,
+    "carbohydrates": 38,
+    "fat": 2,
+    "protein": 5,
+    "saturatedFat": 1,
+    "sodium": 85,
+    "sugar": 28
+  },
+  "preparationTimes": { "prep": 5, "cook": 0, "total": 5 },
+  "tags": ["drink", "healthy", "smoothie"]
+}
