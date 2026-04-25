@@ -5,7 +5,7 @@ import { NavLink } from '@/ui/components/atoms/NavLink';
 
 export function MainNavigation() {
   return (
-    <nav className="grid h-full grid-cols-3">
+    <nav className="mx-auto grid h-full max-w-7xl grid-cols-3 px-2">
       <div className="flex items-center justify-start">
         <Brand />
       </div>

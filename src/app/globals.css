@@ -93,11 +93,16 @@
      (bg-surface, text-muted, border-line, etc.) */
 
   /* Backgrounds */
-  --color-background: var(--color-neutral-50); /* page canvas */
-  --color-surface: var(--color-neutral-50); /* base layer */
-  --color-surface-raised: var(--color-neutral-100); /* card layer */
-  --color-surface-cream: var(--color-cream-200); /* warm card layer */
-  --color-callout: var(--color-primary-50); /* highlight surface */
+  /* Canvas is slightly "deeper" */
+  --color-background: var(--color-neutral-50);
+  /* Base Layer */
+  --color-surface: var(--color-neutral-100);
+  /* Standard Card Layer */
+  --color-surface-raised: var(--color-cream-100);
+  /* Emphasis/Warm Layer */
+  --color-surface-warm: var(--color-cream-200);
+  /* Callout/Highlight Layer */
+  --color-callout: var(--color-primary-50);
 
   /* Borders */
   --color-line: var(--color-neutral-200);
