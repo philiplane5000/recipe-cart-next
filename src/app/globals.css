@@ -90,7 +90,7 @@
   --color-coral-900: oklch(0.28 0.05 18);
 
   /* Semantic tokens — Tailwind generates utilities from these
-     (bg-surface, text-muted, border-subtle, etc.) */
+     (bg-surface, text-muted, border-line, etc.) */
 
   /* Backgrounds */
   --color-background: var(--color-neutral-50); /* page canvas */
@@ -100,8 +100,8 @@
   --color-callout: var(--color-primary-50); /* highlight surface */
 
   /* Borders */
-  --color-border: var(--color-neutral-200);
-  --color-border-subtle: var(--color-neutral-100);
+  --color-line: var(--color-neutral-200);
+  --color-line-subtle: var(--color-neutral-100);
 
   /* Text */
   --color-text: var(--color-primary-900); /* near-black, never cold */
