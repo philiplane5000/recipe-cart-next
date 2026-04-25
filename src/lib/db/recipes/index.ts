@@ -62,3 +62,12 @@ export async function deleteById(id: string): Promise<boolean> {
 
   return result.deletedCount === 1;
 }
+
+/**
+ * Lists all recipes in the recipes collection
+ * @returns an array of recipe documents
+ */
+export async function listAll(): Promise<RecipeDocument[]> {
+  const db = await getDb();
+  return db.collection<RecipeDocument>('recipes').find({}).toArray();
+}
