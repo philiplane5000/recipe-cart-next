@@ -52,6 +52,7 @@ export function RecipeCard({ recipe, size = 'small' }: RecipeCardProps) {
   return (
     <Link
       href={`/recipes/${recipe._id.toString()}`}
+      aria-label={recipe.name}
       className={styles.root()}
     >
       <div className={styles.imageWrap()}>

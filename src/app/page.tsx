@@ -13,6 +13,9 @@ export default async function Home() {
     );
   }
 
+  // Placeholder selection rule — random per request while the page is fully dynamic.
+  // If this page becomes statically generated or revalidated (ISR/PPR), the "random"
+  // pick will freeze until rebuild; replace with a real selection rule before then.
   const featuredIndex = Math.floor(Math.random() * recipes.length);
   const featured = recipes[featuredIndex];
   const rest = recipes.filter((_, i) => i !== featuredIndex);
