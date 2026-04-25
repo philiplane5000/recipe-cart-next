@@ -21,6 +21,7 @@ export async function submit(
 
   const db = await getDb();
   return db.collection<WithoutId<RecipeDocument>>('recipes').insertOne({
+    visibility: 'private',
     ...recipe,
     schemaVersion: CURRENT_SCHEMA_VERSION,
     createdAt: new Date(),
