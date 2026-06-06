@@ -124,8 +124,8 @@ interface Recipe {
   imageKey?: string;
   nutrition?: NutritionInfo;
   preparationTimes?: {
-    cook: number;  // in minutes
-    prep: number;  // in minutes
+    cook: number; // in minutes
+    prep: number; // in minutes
     total: number; // in minutes
   };
   tags?: string[];

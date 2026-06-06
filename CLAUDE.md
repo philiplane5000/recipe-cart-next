@@ -15,11 +15,13 @@ npm run format:check # Prettier check without writing
 No test runner is configured yet.
 
 **Local MongoDB** (required for API routes):
+
 ```bash
 docker compose up -d   # Start MongoDB 8 on port 27017
 ```
 
 Set `MONGODB_URI` in `.env.local`:
+
 ```
 MONGODB_URI="mongodb://recipe-admin:Gr33np3As@localhost:27017/recipecart?authSource=admin"
 ```
@@ -35,7 +37,10 @@ MONGODB_URI="mongodb://recipe-admin:Gr33np3As@localhost:27017/recipecart?authSou
 All routes live under `src/app/`. The default is Server Components; mark files `"use client"` only when required (event handlers, React Aria interactive components). Dynamic API params use the Next.js 15+ `Promise`-based pattern:
 
 ```typescript
-export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const { id } = await params;
 }
 ```
