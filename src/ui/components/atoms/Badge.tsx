@@ -5,8 +5,7 @@ const badge = tv({
   base: 'inline-flex items-center text-xs font-semibold uppercase tracking-wider',
   variants: {
     variant: {
-      seasonal:
-        'rounded-md bg-tertiary-300 px-2.5 py-1 text-tertiary-900',
+      seasonal: 'rounded-md bg-badge-seasonal px-2.5 py-1 text-tertiary-900',
       meta: 'text-text-secondary',
     },
   },

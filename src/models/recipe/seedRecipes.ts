@@ -268,7 +268,8 @@ const recipes: Omit<SeedRecipe, 'createdAt'>[] = [
 
   {
     name: 'Banana Berry Smoothie',
-    description: 'A refreshing smoothie packed with banana, berries, and natural sweetness.',
+    description:
+      'A refreshing smoothie packed with banana, berries, and natural sweetness.',
     schemaVersion: 1,
     servings: 2,
     visibility: 'public',
@@ -314,7 +315,12 @@ const recipes: Omit<SeedRecipe, 'createdAt'>[] = [
       url: 'https://images.unsplash.com/photo-1512058564366-18510be2db19',
     },
     ingredients: [
-      { name: 'firm tofu', quantity: 14, unit: 'oz', notes: 'pressed and cubed' },
+      {
+        name: 'firm tofu',
+        quantity: 14,
+        unit: 'oz',
+        notes: 'pressed and cubed',
+      },
       { name: 'broccoli florets', quantity: 2, unit: 'cups' },
       { name: 'carrots', quantity: 1, unit: 'cup', notes: 'sliced' },
       { name: 'bell pepper', quantity: 1, unit: 'whole', notes: 'sliced' },
@@ -390,7 +396,9 @@ async function seed() {
   await collection.deleteMany({});
   await collection.insertMany(docs);
 
-  console.log(`Inserted ${docs.length} recipes into ${MONGODB_DB_NAME}/${COLLECTION}`);
+  console.log(
+    `Inserted ${docs.length} recipes into ${MONGODB_DB_NAME}/${COLLECTION}`,
+  );
   await client.close();
 }
 

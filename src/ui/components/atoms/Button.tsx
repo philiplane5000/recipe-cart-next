@@ -8,7 +8,13 @@ import { tv } from 'tailwind-variants';
 
 export interface ButtonProps extends RACButtonProps {
   /** @default 'primary' */
-  variant?: 'primary' | 'secondary' | 'coral' | 'tertiary' | 'destructive' | 'quiet';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'coral'
+    | 'tertiary'
+    | 'destructive'
+    | 'quiet';
 }
 
 const button = tv({
@@ -23,8 +29,7 @@ const button = tv({
         'bg-coral-500 hover:bg-coral-600 pressed:bg-coral-700 text-cream-50',
       tertiary:
         'bg-tertiary-400 hover:bg-tertiary-500 pressed:bg-tertiary-600 text-cream-50',
-      destructive:
-        'bg-red-700 hover:bg-red-800 pressed:bg-red-900 text-white',
+      destructive: 'bg-red-700 hover:bg-red-800 pressed:bg-red-900 text-white',
       quiet:
         'border-0 bg-transparent hover:bg-cream-200 pressed:bg-cream-300 text-primary-800',
     },

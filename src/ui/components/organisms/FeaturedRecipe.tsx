@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/ui/components/atoms/Badge';
+import { H1 } from '@/ui/components/atoms/H1';
 import type { RecipeDocument } from '@/models/recipe';
 
 interface FeaturedRecipeProps {
@@ -12,8 +13,7 @@ export function FeaturedRecipe({
   recipe,
   badge = 'Seasonal Special',
 }: FeaturedRecipeProps) {
-  const imageSrc =
-    recipe.image?.source === 'url' ? recipe.image.url : null;
+  const imageSrc = recipe.image?.source === 'url' ? recipe.image.url : null;
 
   return (
     <section className="relative w-full overflow-hidden rounded-3xl">
@@ -36,13 +36,16 @@ export function FeaturedRecipe({
           <Badge variant="seasonal" className="self-start">
             {badge}
           </Badge>
-          <h1 className="m-0 text-h1 font-bold tracking-tight text-cream-50">
+          <H1 weight="strong" className="text-text-on-dark m-0 tracking-tight">
             {recipe.name}
-          </h1>
-          <p className="m-0 max-w-md text-cream-50/90">{recipe.description}</p>
+          </H1>
+          <p className="text-text-on-dark/90 m-0 max-w-md">
+            {recipe.description}
+          </p>
+          {/* TODO(a11y): no visible focus-visible ring on the CTA Link — only the browser default. */}
           <Link
             href={`/recipes/${recipe._id.toString()}`}
-            className="mt-2 inline-flex h-10 items-center gap-2 self-start rounded-lg bg-primary-700 px-4 text-sm font-medium text-cream-50 transition hover:bg-primary-800"
+            className="bg-cta text-text-on-dark hover:bg-primary-800 mt-2 inline-flex h-10 items-center gap-2 self-start rounded-lg px-4 text-sm font-medium transition"
           >
             View Full Recipe
             <span aria-hidden>→</span>
