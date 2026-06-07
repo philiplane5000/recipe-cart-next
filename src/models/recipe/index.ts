@@ -2,14 +2,24 @@ import type { ObjectId } from 'mongodb';
 
 export const CURRENT_SCHEMA_VERSION = 1;
 
-interface NutritionInfo {
-  calories: number;
-  carbohydrates: number;
-  fat: number;
-  protein: number;
-  saturatedFat: number;
-  sodium: number;
-  sugar: number;
+/**
+ * Character cap for a recipe's short description. Sized for a 2–3 sentence blurb
+ * (the longest seed/sample description is ~122 chars). Single source of truth for
+ * the create form's <TextArea maxLength>; mirrored in the DB validation schema
+ * (src/models/recipe/schema/recipe-validation-schema.json → description.maxLength).
+ */
+export const DESCRIPTION_MAX_LENGTH = 280;
+
+// Per-serving nutrition. Every field is individually optional, matching the DB
+// validation schema (recipe-validation-schema.json → nutrition has no `required`).
+export interface NutritionInfo {
+  calories?: number;
+  carbohydrates?: number;
+  fat?: number;
+  protein?: number;
+  saturatedFat?: number;
+  sodium?: number;
+  sugar?: number;
 }
 
 export interface Ingredient {

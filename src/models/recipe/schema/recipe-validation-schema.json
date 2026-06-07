@@ -20,7 +20,8 @@
         "bsonType": "date"
       },
       "description": {
-        "bsonType": "string"
+        "bsonType": "string",
+        "maxLength": 280
       },
       "ingredients": {
         "bsonType": "array",
