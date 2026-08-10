@@ -55,6 +55,12 @@ Style variants are defined with `tailwind-variants` in `src/ui/variants/`. Use t
 
 **React Aria Components** is the default for any interactive element (buttons, inputs, dialogs, etc.) to get ARIA semantics and keyboard navigation for free.
 
+RAC ships **unstyled** primitives — styling them ourselves is the intended usage, not a workaround. Import primitives from the `'react-aria-components'` barrel and style them with our `tv` variants + semantic tokens. Do **not** copy RAC's "starter kit" example files: their docs import from local helpers like `./Field`, `./Form`, and `./utils` (e.g. `composeTailwindRenderProps`, `focusRing`, `fieldBorderStyles`, a `Description` component), none of which are part of the npm package — they're sibling files in a template you'd have to copy wholesale, and they conflict with our token system. Equivalents here:
+
+- `composeTailwindRenderProps` → `composeRenderProps` (real barrel export) + `tailwind-merge`.
+- `Description` → RAC's `<Text slot="description">`.
+- Drive variant state from RAC render-prop booleans (`isFocusVisible`, `isInvalid`, `isDisabled`, `isPending`, …) passed into a `tv`, as in `Button.tsx` / `TextField.tsx`. There is **no** `tailwindcss-react-aria-components` plugin and no `@custom-variant`, so `pressed:` / `data-*` Tailwind variant prefixes do **not** work — use the render-prop pattern instead.
+
 ### Design System
 
 All design tokens are defined as CSS custom properties in `src/app/globals.css` using Tailwind v4's `@theme` block.
