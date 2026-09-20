@@ -27,7 +27,7 @@
         "bsonType": "array",
         "items": {
           "bsonType": "object",
-          "required": ["name", "quantity", "unit"],
+          "required": ["name", "quantity"],
           "properties": {
             "name": {
               "bsonType": "string"

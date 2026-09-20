@@ -58,10 +58,12 @@ function parseIngredient(value: unknown, i: number): Ingredient {
   if (!name) fail(`ingredients[${i}].name is required`);
   const notes =
     raw.notes == null ? '' : asString(raw.notes, `ingredients[${i}].notes`);
+  const unit =
+    raw.unit == null ? '' : asString(raw.unit, `ingredients[${i}].unit`);
   return {
     name,
     quantity: asNumber(raw.quantity, `ingredients[${i}].quantity`),
-    unit: asString(raw.unit, `ingredients[${i}].unit`),
+    ...(unit ? { unit } : {}),
     ...(notes ? { notes } : {}),
   };
 }

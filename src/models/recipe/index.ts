@@ -25,7 +25,8 @@ export interface NutritionInfo {
 export interface Ingredient {
   name: string;
   quantity: number;
-  unit: string;
+  /** Optional: countable ingredients ("2 eggs", "1 banana") have no unit. */
+  unit?: string;
   notes?: string;
 }
 

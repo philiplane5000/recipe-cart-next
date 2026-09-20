@@ -129,7 +129,7 @@ export function CreateRecipeForm({ action }: CreateRecipeFormProps) {
         </div>
       </fieldset>
 
-      {/* Ingredients — required, array of { name, quantity, unit, notes? } */}
+      {/* Ingredients — required, array of { name, quantity, unit?, notes? } */}
       <fieldset className="border-line bg-surface-raised rounded-2xl border p-6">
         <legend className="text-text-secondary px-2 text-sm font-medium">
           Ingredients

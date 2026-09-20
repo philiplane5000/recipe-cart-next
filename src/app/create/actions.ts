@@ -68,14 +68,15 @@ export async function createRecipe(
   const ingredients: Ingredient[] = names
     .map((rawName, i): Ingredient => {
       const note = String(notes[i] ?? '').trim();
+      const unit = String(units[i] ?? '').trim();
       return {
         name: String(rawName).trim(),
         quantity: toNumber(quantities[i]) ?? 0,
-        unit: String(units[i] ?? '').trim(),
+        ...(unit ? { unit } : {}),
         ...(note ? { notes: note } : {}),
       };
     })
-    .filter((ing) => ing.name !== '' || ing.unit !== '' || ing.quantity !== 0);
+    .filter((ing) => ing.name !== '' || ing.unit || ing.quantity !== 0);
 
   // Steps / tags: repeated inputs read in document order; blanks dropped.
   const steps = formData

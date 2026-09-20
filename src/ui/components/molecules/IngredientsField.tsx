@@ -65,9 +65,8 @@ export function IngredientsField({ defaultItems }: IngredientsFieldProps = {}) {
               <TextField
                 name="ingredientUnit"
                 label="Unit"
-                placeholder="e.g., cups"
+                placeholder="optional — e.g., cups"
                 defaultValue={seed?.unit}
-                isRequired
               />
               <NumberField
                 name="ingredientQuantity"
