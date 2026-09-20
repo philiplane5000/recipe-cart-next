@@ -1,4 +1,5 @@
 'use client';
+import { Plus, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { Button } from '@/ui/components/atoms/Button';
 import { NumberField } from '@/ui/components/atoms/NumberField';
@@ -34,16 +35,7 @@ export function IngredientsField() {
               isDisabled={rowIds.length === 1}
               aria-label={`Remove ingredient ${index + 1}`}
             >
-              <svg
-                viewBox="0 0 20 20"
-                className="size-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                aria-hidden="true"
-              >
-                <path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" />
-              </svg>
+              <X className="size-4" aria-hidden="true" />
             </Button>
           </div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -75,8 +67,12 @@ export function IngredientsField() {
         </div>
       ))}
       <div>
-        <Button variant="secondary" onPress={addRow}>
-          Add ingredient
+        <Button
+          variant="secondary"
+          onPress={addRow}
+          aria-label="Add ingredient"
+        >
+          <Plus className="size-5" aria-hidden="true" />
         </Button>
       </div>
     </div>

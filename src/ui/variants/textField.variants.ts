@@ -7,7 +7,7 @@ import { tv, type VariantProps } from 'tailwind-variants';
 // disabled. TextField adds the invalid state. The 1px border width is constant
 // across states; only its color changes, so no state causes layout shift.
 export const textFieldInput = tv({
-  base: 'w-full min-h-10 box-border rounded-full border border-line bg-background px-4 py-0 font-sans text-sm text-text outline-none transition placeholder:text-text-secondary',
+  base: 'w-full min-h-10 box-border rounded-full border border-line bg-background px-4 py-0 font-sans text-base text-text outline-none transition placeholder:text-text-secondary',
   variants: {
     isFocusVisible: {
       true: 'border-cta',

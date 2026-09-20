@@ -37,7 +37,7 @@ export function SearchBar({
       <Search aria-hidden className="text-text-secondary size-4 shrink-0" />
       <Input
         placeholder={placeholder}
-        className="text-text placeholder:text-text-secondary flex-1 bg-transparent text-sm outline-none [&::-webkit-search-cancel-button]:appearance-none"
+        className="text-text placeholder:text-text-secondary flex-1 bg-transparent text-base outline-none [&::-webkit-search-cancel-button]:appearance-none"
       />
     </SearchField>
   );

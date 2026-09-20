@@ -1,4 +1,5 @@
 'use client';
+import { Plus, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { Button } from '@/ui/components/atoms/Button';
 import { TextArea } from '@/ui/components/atoms/TextArea';
@@ -76,22 +77,17 @@ export function StringListField({
             isDisabled={required && rowIds.length === 1}
             aria-label={`Remove ${itemLabel} ${index + 1}`}
           >
-            <svg
-              viewBox="0 0 20 20"
-              className="size-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              aria-hidden="true"
-            >
-              <path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" />
-            </svg>
+            <X className="size-4" aria-hidden="true" />
           </Button>
         </div>
       ))}
       <div>
-        <Button variant="secondary" onPress={addRow}>
-          Add {itemLabel.toLowerCase()}
+        <Button
+          variant="secondary"
+          onPress={addRow}
+          aria-label={`Add ${itemLabel.toLowerCase()}`}
+        >
+          <Plus className="size-5" aria-hidden="true" />
         </Button>
       </div>
     </div>

@@ -8,7 +8,7 @@ import { tv, type VariantProps } from 'tailwind-variants';
 // padding, a taller min-height, and vertical-only resize. As with the input, the
 // 1px border width is constant across states so no state causes layout shift.
 export const textAreaInput = tv({
-  base: 'w-full min-h-24 box-border resize-y rounded-2xl border border-line bg-background px-4 py-2 font-sans text-sm leading-relaxed text-text outline-none transition placeholder:text-text-secondary',
+  base: 'w-full min-h-24 box-border resize-y rounded-2xl border border-line bg-background px-4 py-2 font-sans text-base leading-relaxed text-text outline-none transition placeholder:text-text-secondary',
   variants: {
     isFocusVisible: {
       true: 'border-cta',
