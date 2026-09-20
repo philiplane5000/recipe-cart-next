@@ -1,4 +1,10 @@
 @import 'tailwindcss';
+
+/* React Aria Components sets `data-pressed` on pressed elements. There is no
+   `tailwindcss-react-aria-components` plugin installed, so declare the variant
+   here to make `pressed:` prefixes work (see Button.tsx). */
+@custom-variant pressed (&[data-pressed]);
+
 @theme {
   --font-sans: var(--font-nunito-sans);
 
