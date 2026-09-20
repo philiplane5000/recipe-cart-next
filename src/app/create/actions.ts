@@ -45,7 +45,7 @@ const NUTRITION_KEYS = [
  * instead of crashing the route. On success it redirects (never returns).
  */
 export async function createRecipe(
-  _prevState: CreateRecipeState,
+  prevState: CreateRecipeState,
   formData: FormData,
 ): Promise<CreateRecipeState> {
   const name = String(formData.get('name') ?? '').trim();
@@ -127,7 +127,14 @@ export async function createRecipe(
     await submit(recipe);
   } catch (reason) {
     console.error('createRecipe failed:', reason);
-    return { error: "Sorry, we couldn't save your recipe. Please try again." };
+    // Echo the repeatable groups back: React 19 resets the form after the
+    // action settles, which blanks every uncontrolled input. Without this the
+    // user is told to "try again" against an empty set of rows.
+    return {
+      error: "Sorry, we couldn't save your recipe. Please try again.",
+      values: { ingredients, steps, tags },
+      attempt: prevState.attempt + 1,
+    };
   }
 
   revalidatePath('/');

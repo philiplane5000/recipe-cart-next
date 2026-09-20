@@ -20,9 +20,9 @@ export async function submit(
   }
 
   const db = await getDb();
-  // visibility is a required field on Recipe, so it always arrives via `recipe`.
-  // (If a private-by-default is wanted for partial inputs, make it optional on
-  // Recipe and set `visibility: recipe.visibility ?? 'private'` after the spread.)
+  // `recipe` is trusted to be a well-formed Recipe. Callers handling untrusted
+  // input (e.g. POST /api/recipes) must run it through parseRecipe first —
+  // that's where visibility defaults to 'private'.
   return db.collection<WithoutId<RecipeDocument>>('recipes').insertOne({
     ...recipe,
     schemaVersion: CURRENT_SCHEMA_VERSION,

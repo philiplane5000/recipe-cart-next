@@ -50,9 +50,10 @@ export interface CreateRecipeFormProps {
  *
  * Form reset: a returned (error) state resets *uncontrolled* fields. Title and
  * description are controlled here so they survive it; the NumberFields are
- * internally controlled too, so they persist as well. The remaining uncontrolled
- * fields (ingredient text, steps, tags) still reset — a fuller preservation pass
- * is a follow-up if it proves annoying.
+ * internally controlled too. The repeatable groups are uncontrolled, so the
+ * action echoes their submitted values back in `state.values` and they're
+ * remounted on `state.attempt` to pick them up as fresh defaultValues —
+ * nothing the user typed is lost on a failed save.
  *
  * Deferred to a follow-up PR: image (optional in the schema, so save works
  * without it).
@@ -134,7 +135,13 @@ export function CreateRecipeForm({ action }: CreateRecipeFormProps) {
           Ingredients
         </legend>
         <div className="flex flex-col gap-4 pt-2">
-          <IngredientsField />
+          {/* key={state.attempt} forces a remount on each failed submit so the
+              restored values land as fresh defaultValues — React only reads
+              defaultValue on mount, so a re-render alone wouldn't refill them. */}
+          <IngredientsField
+            key={state.attempt}
+            defaultItems={state.values?.ingredients}
+          />
         </div>
       </fieldset>
 
@@ -145,9 +152,11 @@ export function CreateRecipeForm({ action }: CreateRecipeFormProps) {
         </legend>
         <div className="flex flex-col gap-4 pt-2">
           <StringListField
+            key={state.attempt}
             name="step"
             itemLabel="Step"
             placeholder="Describe this step…"
+            defaultItems={state.values?.steps}
             multiline
             ordered
             required
@@ -208,9 +217,11 @@ export function CreateRecipeForm({ action }: CreateRecipeFormProps) {
         </legend>
         <div className="flex flex-col gap-4 pt-2">
           <StringListField
+            key={state.attempt}
             name="tag"
             itemLabel="Tag"
             placeholder="e.g., vegetarian"
+            defaultItems={state.values?.tags}
           />
         </div>
       </fieldset>
@@ -219,7 +230,11 @@ export function CreateRecipeForm({ action }: CreateRecipeFormProps) {
           follow-up PR. It's optional in the schema, so recipes save without it. */}
 
       <div className="flex justify-end">
-        <Button type="submit" isPending={isPending} isDisabled={isPending}>
+        {/* isPending only — RAC blocks the press, swaps type to "button" so it
+            can't re-submit, and sets aria-disabled while keeping it focusable.
+            Adding isDisabled would render the native `disabled` attribute and
+            drop focus to <body> mid-submit. */}
+        <Button type="submit" isPending={isPending}>
           Save recipe
         </Button>
       </div>

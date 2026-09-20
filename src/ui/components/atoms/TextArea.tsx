@@ -31,10 +31,10 @@ export interface TextAreaProps extends RACTextFieldProps {
  * long-form copy (e.g. a recipe description); use TextField for single-line.
  *
  * When `maxLength` is set, a live "count/limit" readout renders beneath the
- * field. It's aria-hidden — the native maxLength already enforces (and conveys)
- * the limit, and announcing a fresh count on every keystroke is noise. The
- * enhancement path, if we want it announced, is a debounced aria-live="polite"
- * region that only speaks near the limit.
+ * field. It stays aria-hidden — announcing a fresh count on every keystroke is
+ * noise. Instead a polite live region announces once when the cap is reached,
+ * since the browser drops further keystrokes with no other signal (WCAG 3.3.1).
+ * The message is a constant, so typing on at the limit doesn't re-announce.
  */
 export function TextArea({
   label,
@@ -75,6 +75,16 @@ export function TextArea({
           textAreaInput({ ...renderProps, className }),
         )}
       />
+      {/* Announced once on reaching the cap; silent otherwise. Separate from
+          the aria-hidden counter so screen readers get the event, not a
+          per-keystroke number. */}
+      {maxLength != null && (
+        <span aria-live="polite" className="sr-only">
+          {atLimit
+            ? `Character limit reached. ${maxLength} characters maximum.`
+            : ''}
+        </span>
+      )}
       {(description || maxLength != null) && (
         <div className="flex items-baseline gap-2">
           {description && (

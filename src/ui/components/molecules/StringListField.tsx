@@ -17,6 +17,13 @@ export interface StringListFieldProps {
   ordered?: boolean;
   /** Require at least one non-empty entry; keeps a minimum of one row. */
   required?: boolean;
+  /**
+   * Rows to seed on mount, used to restore what the user typed after a failed
+   * submit. Row ids start at the seed index, so `defaultItems[id]` addresses
+   * the right seed and rows added later (id >= length) get no seed. Only read
+   * on mount — the caller remounts via `key` to re-seed.
+   */
+  defaultItems?: string[];
 }
 
 /**
@@ -33,9 +40,13 @@ export function StringListField({
   multiline = false,
   ordered = false,
   required = false,
+  defaultItems,
 }: StringListFieldProps) {
-  const nextId = useRef(1);
-  const [rowIds, setRowIds] = useState<number[]>(() => [0]);
+  const seedCount = defaultItems?.length ?? 0;
+  const nextId = useRef(Math.max(seedCount, 1));
+  const [rowIds, setRowIds] = useState<number[]>(() =>
+    seedCount ? defaultItems!.map((_, i) => i) : [0],
+  );
 
   const addRow = () => setRowIds((ids) => [...ids, nextId.current++]);
   const removeRow = (id: number) =>
@@ -58,6 +69,7 @@ export function StringListField({
               name={name}
               aria-label={`${itemLabel} ${index + 1}`}
               placeholder={placeholder}
+              defaultValue={defaultItems?.[id]}
               isRequired={required}
               rows={2}
               className="flex-1"
@@ -67,6 +79,7 @@ export function StringListField({
               name={name}
               aria-label={`${itemLabel} ${index + 1}`}
               placeholder={placeholder}
+              defaultValue={defaultItems?.[id]}
               isRequired={required}
               className="flex-1"
             />
