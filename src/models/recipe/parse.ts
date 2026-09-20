@@ -4,6 +4,7 @@ import {
   type Ingredient,
   type NutritionInfo,
   type Recipe,
+  type RecipeImage,
   type RecipeVisibility,
 } from '@/models/recipe';
 
@@ -63,6 +64,25 @@ function parseIngredient(value: unknown, i: number): Ingredient {
     unit: asString(raw.unit, `ingredients[${i}].unit`),
     ...(notes ? { notes } : {}),
   };
+}
+
+/** Mirrors the schema's `image.oneOf`: upload needs `key`, url needs `url`. */
+function parseImage(value: unknown): RecipeImage {
+  if (typeof value !== 'object' || value === null) {
+    fail('image must be an object');
+  }
+  const raw = value as Record<string, unknown>;
+  if (raw.source === 'upload') {
+    const key = asString(raw.key, 'image.key');
+    if (!key) fail('image.key is required when source is "upload"');
+    return { source: 'upload', key };
+  }
+  if (raw.source === 'url') {
+    const url = asString(raw.url, 'image.url');
+    if (!url) fail('image.url is required when source is "url"');
+    return { source: 'url', url };
+  }
+  return fail("image.source must be 'upload' or 'url'");
 }
 
 const NUTRITION_KEYS = [
@@ -142,6 +162,12 @@ export function parseRecipe(input: unknown): Recipe {
     }
   }
 
+  const contributorId =
+    raw.contributorId == null
+      ? undefined
+      : asString(raw.contributorId, 'contributorId');
+  const image = raw.image == null ? undefined : parseImage(raw.image);
+
   return {
     name,
     description,
@@ -153,5 +179,7 @@ export function parseRecipe(input: unknown): Recipe {
     ...(tags.length ? { tags } : {}),
     ...(preparationTimes ? { preparationTimes } : {}),
     ...(Object.keys(nutrition).length ? { nutrition } : {}),
+    ...(contributorId ? { contributorId } : {}),
+    ...(image ? { image } : {}),
   };
 }

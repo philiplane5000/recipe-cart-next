@@ -3,13 +3,13 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { submit } from '@/lib/db/recipes';
-import { CURRENT_SCHEMA_VERSION } from '@/models/recipe';
 import type {
   Ingredient,
   NutritionInfo,
   Recipe,
   RecipeVisibility,
 } from '@/models/recipe';
+import { parseRecipe, RecipeValidationError } from '@/models/recipe/parse';
 import type { CreateRecipeState } from './types';
 
 /** Parse a FormData value to a finite number, or undefined when blank/invalid. */
@@ -39,10 +39,12 @@ const NUTRITION_KEYS = [
  * index-aligned parallel arrays (every row emits all four), steps/tags as
  * ordered string lists with blanks dropped.
  *
- * Per-field validation lives on the client (native + RAC `validate`). This
- * action's only user-facing failure mode is persistence: if submit() or the
- * collection validator throws, it returns a form-level `error` for the banner
- * instead of crashing the route. On success it redirects (never returns).
+ * Per-field validation lives on the client (native + RAC `validate`), but the
+ * assembled recipe still goes through parseRecipe — the same gate as
+ * POST /api/recipes — so neither write path can persist what the other would
+ * reject. Both failure modes (validation, persistence) return a form-level
+ * `error` plus the submitted values for the banner, rather than crashing the
+ * route. On success it redirects (never returns).
  */
 export async function createRecipe(
   prevState: CreateRecipeState,
@@ -106,35 +108,48 @@ export async function createRecipe(
   }
   const hasNutrition = Object.keys(nutrition).length > 0;
 
-  const recipe: Recipe = {
-    name,
-    description,
-    servings,
-    visibility,
-    ingredients,
-    steps,
-    schemaVersion: CURRENT_SCHEMA_VERSION,
-    ...(tags.length ? { tags } : {}),
-    ...(preparationTimes ? { preparationTimes } : {}),
-    ...(hasNutrition ? { nutrition } : {}),
-  };
+  // Echoed back on any failure: React 19 resets the form after the action
+  // settles, which blanks every uncontrolled input. Without this the user is
+  // told to try again against an empty set of rows.
+  const values = { ingredients, steps, tags };
+  const failure = (error: string): CreateRecipeState => ({
+    error,
+    values,
+    attempt: prevState.attempt + 1,
+  });
 
-  // submit() throws on missing name/ingredients or a collection-validator
-  // failure. Catch it and surface a friendly banner rather than crashing the
-  // route; the raw reason is logged server-side for debugging. redirect() must
-  // stay OUT of the try/catch — it signals via a thrown error.
+  // Same gate the API route uses, so both write paths enforce one rule set
+  // (non-negative numbers, non-empty steps, the description cap). Client-side
+  // validation should catch all of this first — reaching here means it was
+  // bypassed or the client and server rules have drifted.
+  let recipe: Recipe;
+  try {
+    recipe = parseRecipe({
+      name,
+      description,
+      servings,
+      visibility,
+      ingredients,
+      steps,
+      ...(tags.length ? { tags } : {}),
+      ...(preparationTimes ? { preparationTimes } : {}),
+      ...(hasNutrition ? { nutrition } : {}),
+    });
+  } catch (reason) {
+    if (!(reason instanceof RecipeValidationError)) throw reason;
+    console.error('createRecipe validation failed:', reason.message);
+    return failure(`Please check your entries — ${reason.message}.`);
+  }
+
+  // submit() throws on a collection-validator failure or a write error. Catch
+  // it and surface a friendly banner rather than crashing the route; the raw
+  // reason is logged server-side. redirect() must stay OUT of the try/catch —
+  // it signals via a thrown error.
   try {
     await submit(recipe);
   } catch (reason) {
     console.error('createRecipe failed:', reason);
-    // Echo the repeatable groups back: React 19 resets the form after the
-    // action settles, which blanks every uncontrolled input. Without this the
-    // user is told to "try again" against an empty set of rows.
-    return {
-      error: "Sorry, we couldn't save your recipe. Please try again.",
-      values: { ingredients, steps, tags },
-      attempt: prevState.attempt + 1,
-    };
+    return failure("Sorry, we couldn't save your recipe. Please try again.");
   }
 
   revalidatePath('/');
