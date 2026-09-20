@@ -1,3 +1,4 @@
+import { describeDocumentValidationFailure } from '@/lib/db/documentValidation';
 import { submit, listAll } from '@/lib/db/recipes';
 import { parseRecipe, RecipeValidationError } from '@/models/recipe/parse';
 
@@ -27,6 +28,17 @@ export async function POST(request: Request) {
     const result = await submit(recipe);
     return Response.json({ id: result.insertedId }, { status: 201 });
   } catch (reason) {
+    // The collection validator rejecting a parseRecipe-approved document means
+    // the two rule sets disagree: 422 (not 500) and name the failing rules.
+    const rejected = describeDocumentValidationFailure(reason);
+    if (rejected) {
+      console.error('recipes collection rejected document:', rejected);
+      return Response.json(
+        { error: 'Document failed collection validation', details: rejected },
+        { status: 422 },
+      );
+    }
+
     const message =
       reason instanceof Error ? reason.message : 'Unexpected error';
     console.error(message);

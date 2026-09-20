@@ -4,13 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "npm run db:validator -- --soft",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "seed": "tsx --env-file=.env --env-file=.env.local src/models/recipe/seedRecipes.ts"
+    "seed": "tsx --env-file=.env --env-file=.env.local src/models/recipe/seedRecipes.ts",
+    "db:validator": "tsx --env-file=.env --env-file=.env.local src/models/recipe/schema/installValidator.ts"
   },
   "dependencies": {
     "lucide-react": "^1.8.0",

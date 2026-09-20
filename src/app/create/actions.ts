@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { describeDocumentValidationFailure } from '@/lib/db/documentValidation';
 import { submit } from '@/lib/db/recipes';
 import type {
   Ingredient,
@@ -143,13 +144,22 @@ export async function createRecipe(
   }
 
   // submit() throws on a collection-validator failure or a write error. Catch
-  // it and surface a friendly banner rather than crashing the route; the raw
-  // reason is logged server-side. redirect() must stay OUT of the try/catch —
-  // it signals via a thrown error.
+  // it and surface a banner rather than crashing the route; the raw reason is
+  // logged server-side. redirect() must stay OUT of the try/catch — it signals
+  // via a thrown error.
   try {
     await submit(recipe);
   } catch (reason) {
     console.error('createRecipe failed:', reason);
+    // A validator rejection means parseRecipe and the collection schema have
+    // drifted, so report what the database actually objected to rather than a
+    // generic message — otherwise the mismatch is invisible outside the logs.
+    const rejected = describeDocumentValidationFailure(reason);
+    if (rejected) {
+      return failure(
+        `The database rejected this recipe — ${rejected.join('; ')}.`,
+      );
+    }
     return failure("Sorry, we couldn't save your recipe. Please try again.");
   }
 
