@@ -55,6 +55,14 @@ Style variants are defined with `tailwind-variants` in `src/ui/variants/`. Use t
 
 **React Aria Components** is the default for any interactive element (buttons, inputs, dialogs, etc.) to get ARIA semantics and keyboard navigation for free.
 
+RAC ships **unstyled** primitives — styling them ourselves is the intended usage, not a workaround. Import primitives from the `'react-aria-components'` barrel and style them with our `tv` variants + semantic tokens. Do **not** copy RAC's "starter kit" example files: their docs import from local helpers like `./Field`, `./Form`, and `./utils` (e.g. `composeTailwindRenderProps`, `focusRing`, `fieldBorderStyles`, a `Description` component), none of which are part of the npm package — they're sibling files in a template you'd have to copy wholesale, and they conflict with our token system. Equivalents here:
+
+- `composeTailwindRenderProps` → `composeRenderProps` (real barrel export) + `tailwind-merge`.
+- `Description` → RAC's `<Text slot="description">`.
+- Drive variant state from RAC render-prop booleans (`isFocusVisible`, `isInvalid`, `isDisabled`, `isPending`, …) passed into a `tv`, as in `Button.tsx` / `TextField.tsx`. This is the default: it needs no Tailwind configuration and it is the only option for state RAC exposes solely as a render prop.
+- The one exception is `pressed:`. There is **no** `tailwindcss-react-aria-components` plugin, but `src/app/globals.css` declares the variant by hand — `@custom-variant pressed (&[data-pressed]);` — so `pressed:` prefixes **do** work, and `Button.tsx` relies on them for its press states. Do not delete that declaration or those classes: Tailwind emits nothing for an undeclared variant, so every button would lose its press feedback with no build error.
+- Any **other** `data-*` prefix (`data-hovered:`, `data-selected:`, …) does **not** work until you add its own `@custom-variant` line alongside that one. Prefer a render prop over adding declarations.
+
 ### Design System
 
 All design tokens are defined as CSS custom properties in `src/app/globals.css` using Tailwind v4's `@theme` block.

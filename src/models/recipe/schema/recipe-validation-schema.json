@@ -20,13 +20,14 @@
         "bsonType": "date"
       },
       "description": {
-        "bsonType": "string"
+        "bsonType": "string",
+        "maxLength": 280
       },
       "ingredients": {
         "bsonType": "array",
         "items": {
           "bsonType": "object",
-          "required": ["name", "quantity", "unit"],
+          "required": ["name", "quantity"],
           "properties": {
             "name": {
               "bsonType": "string"

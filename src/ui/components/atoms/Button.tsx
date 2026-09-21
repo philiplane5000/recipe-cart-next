@@ -18,18 +18,22 @@ export interface ButtonProps extends RACButtonProps {
 }
 
 const button = tv({
-  base: 'relative inline-flex items-center justify-center gap-2 border border-transparent h-9 box-border px-3.5 py-0 [&:has(>svg:only-child)]:px-0 [&:has(>svg:only-child)]:h-8 [&:has(>svg:only-child)]:w-8 font-sans text-sm text-center transition rounded-lg cursor-default [-webkit-tap-highlight-color:transparent]',
+  base: 'relative inline-flex items-center justify-center gap-2 border border-transparent h-10 box-border px-4 py-0 [&:has(>svg:only-child)]:px-0 [&:has(>svg:only-child)]:h-9 [&:has(>svg:only-child)]:w-9 font-sans text-base text-center transition rounded-lg cursor-default [-webkit-tap-highlight-color:transparent]',
   variants: {
     variant: {
       primary:
-        'bg-primary-500 hover:bg-primary-600 pressed:bg-primary-700 text-cream-50',
+        'bg-cta hover:bg-cta-hover pressed:bg-cta-pressed text-text-on-dark',
+      destructive:
+        'bg-destructive hover:bg-destructive-hover pressed:bg-destructive-pressed text-text-on-dark',
+      // 3.25:1 / 4.13:1 / 6.28:1. `text-2xl` lives here, not in `base`: at 24px
+      // the label is WCAG "large text" (3:1 floor), which is the only thing
+      // keeping the rest state compliant. Do not shrink it, and keep it a fixed
+      // size — the project's fluid clamp() steps can drop under 24px when narrow.
       secondary:
-        'bg-secondary-400 hover:bg-secondary-500 pressed:bg-secondary-600 text-cream-50',
-      coral:
-        'bg-coral-500 hover:bg-coral-600 pressed:bg-coral-700 text-cream-50',
+        'bg-secondary-500 hover:bg-secondary-600 pressed:bg-secondary-700 text-text-on-dark text-2xl',
       tertiary:
-        'bg-tertiary-400 hover:bg-tertiary-500 pressed:bg-tertiary-600 text-cream-50',
-      destructive: 'bg-red-700 hover:bg-red-800 pressed:bg-red-900 text-white',
+        'bg-tertiary-300 hover:bg-tertiary-400 pressed:bg-tertiary-500 text-text',
+      coral: 'bg-coral-300 hover:bg-coral-400 pressed:bg-coral-500 text-text',
       quiet:
         'border-0 bg-transparent hover:bg-cream-200 pressed:bg-cream-300 text-primary-800',
     },
@@ -52,7 +56,9 @@ const button = tv({
   ],
 });
 
-const LIGHT_TEXT_VARIANTS = new Set(['secondary', 'quiet']);
+/** Light-filled variants need a dark spinner; `isPending` makes text
+ *  transparent, so `currentColor` can't be used. */
+const DARK_SPINNER_VARIANTS = new Set(['tertiary', 'coral', 'quiet']);
 
 export function Button(props: ButtonProps) {
   return (
@@ -71,12 +77,12 @@ export function Button(props: ButtonProps) {
               className="absolute inset-0 flex items-center justify-center"
             >
               <svg
-                className="h-4 w-4 animate-spin"
+                className="h-6 w-6 animate-spin"
                 viewBox="0 0 24 24"
                 stroke={
-                  LIGHT_TEXT_VARIANTS.has(props.variant ?? '')
-                    ? 'black'
-                    : 'white'
+                  DARK_SPINNER_VARIANTS.has(props.variant ?? '')
+                    ? 'var(--color-text)'
+                    : 'var(--color-text-on-dark)'
                 }
               >
                 <circle

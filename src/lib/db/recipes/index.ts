@@ -20,8 +20,10 @@ export async function submit(
   }
 
   const db = await getDb();
+  // `recipe` is trusted to be a well-formed Recipe. Callers handling untrusted
+  // input (e.g. POST /api/recipes) must run it through parseRecipe first —
+  // that's where visibility defaults to 'private'.
   return db.collection<WithoutId<RecipeDocument>>('recipes').insertOne({
-    visibility: 'private',
     ...recipe,
     schemaVersion: CURRENT_SCHEMA_VERSION,
     createdAt: new Date(),

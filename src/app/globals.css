@@ -1,32 +1,51 @@
 @import 'tailwindcss';
+
+/* React Aria Components sets `data-pressed` on pressed elements. There is no
+   `tailwindcss-react-aria-components` plugin installed, so declare the variant
+   here to make `pressed:` prefixes work (see Button.tsx). */
+@custom-variant pressed (&[data-pressed]);
+
 @theme {
   --font-sans: var(--font-nunito-sans);
 
   /* "Quiet" Fluid Scale (Major Second - 1.125 Ratio) */
   /* Optimized for Mobile-First Minimalism */
   --text-xs: clamp(0.75rem, 0.725rem + 0.1vw, 0.875rem); /* 12px -> 14px */
+  --text-sm: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem); /* 14px -> 15px */
+  /* Keep at 16px: below this, iOS Safari zooms the viewport on input focus. */
   --text-base: 1rem;
 
-  --text-h6: clamp(1rem, 0.98rem + 0.15vw, 1.1rem);
-  --text-h5: clamp(1.125rem, 1.1rem + 0.2vw, 1.2rem);
-  --text-h4: clamp(1.266rem, 1.2rem + 0.4vw, 1.4rem);
-  --text-h3: clamp(1.424rem, 1.35rem + 0.6vw, 1.6rem);
-  --text-h2: clamp(1.602rem, 1.5rem + 0.9vw, 1.9rem);
-  --text-h1: clamp(
-    1.802rem,
-    1.7rem + 1.2vw,
-    2.25rem
-  ); /* Max ~36px on desktop */
+  /* Rebased so h6 starts at 18px, clear of --text-base (16px) — previously
+     both were 1rem and collided. Minimums keep the 1.125 major second. */
+  --text-h6: clamp(1.125rem, 1.076rem + 0.22vw, 1.25rem); /* 18px -> 20px */
+  --text-h5: clamp(1.266rem, 1.198rem + 0.3vw, 1.4375rem); /* 20.3px -> 23px */
+  --text-h4: clamp(
+    1.424rem,
+    1.333rem + 0.4vw,
+    1.6563rem
+  ); /* 22.8px -> 26.5px */
+  --text-h3: clamp(
+    1.602rem,
+    1.483rem + 0.53vw,
+    1.9063rem
+  ); /* 25.6px -> 30.5px */
+  --text-h2: clamp(1.802rem, 1.651rem + 0.67vw, 2.1875rem); /* 28.8px -> 35px */
+  --text-h1: clamp(2.027rem, 1.842rem + 0.82vw, 2.5rem); /* 32.4px -> 40px */
 
-  --color-primary-50: oklch(0.97 0.01 175);
-  --color-primary-100: oklch(0.93 0.02 175);
-  --color-primary-200: oklch(0.87 0.03 175);
-  --color-primary-300: oklch(0.8 0.04 175);
-  --color-primary-400: oklch(0.73 0.04 175);
-  --color-primary-500: oklch(0.68 0.04 175); /* ≈ #86A69D */
-  --color-primary-600: oklch(0.58 0.04 175);
-  --color-primary-700: oklch(0.48 0.04 175);
-  --color-primary-800: oklch(0.38 0.03 175);
+  /* Chroma rises through the midtones so the teal reads as teal rather than
+     slate. Lightness is deliberately unchanged — contrast is driven almost
+     entirely by L, so this is nearly free: -700 moves 6.04:1 → 5.91:1 on
+     cream-50 while going from #45655c to #1d6c5b. -900 is left alone because
+     it backs --color-text, which must stay near-black. */
+  --color-primary-50: oklch(0.97 0.012 175);
+  --color-primary-100: oklch(0.93 0.025 175);
+  --color-primary-200: oklch(0.87 0.04 175);
+  --color-primary-300: oklch(0.8 0.055 175);
+  --color-primary-400: oklch(0.73 0.065 175);
+  --color-primary-500: oklch(0.68 0.075 175); /* ≈ #64A896 */
+  --color-primary-600: oklch(0.58 0.08 175);
+  --color-primary-700: oklch(0.48 0.08 175); /* --color-cta, 5.91:1 on cream */
+  --color-primary-800: oklch(0.38 0.06 175);
   --color-primary-900: oklch(0.28 0.02 175);
 
   /* Secondary (Golden Orange - #F2B263 ≈ oklch(0.79 0.14 75)) */
@@ -35,7 +54,8 @@
   --color-secondary-200: oklch(0.87 0.09 75);
   --color-secondary-300: oklch(0.82 0.12 75);
   --color-secondary-400: oklch(0.79 0.14 75); /* ≈ #F2B263 */
-  --color-secondary-500: oklch(0.68 0.14 75);
+  /* Darkened from L 0.68: 3.25:1 on cream-50, clears WCAG AA large text. */
+  --color-secondary-500: oklch(0.64 0.138 75); /* ≈ #BC7E00 */
   --color-secondary-600: oklch(0.58 0.13 75);
   --color-secondary-700: oklch(0.48 0.11 75);
   --color-secondary-800: oklch(0.38 0.08 75);
@@ -105,21 +125,31 @@
   --color-callout: var(--color-primary-50);
 
   /* Borders */
-  --color-line: var(--color-neutral-200);
+  --color-line: var(--color-neutral-500);
   --color-line-subtle: var(--color-neutral-100);
 
   /* Text */
   --color-text: var(--color-primary-900); /* near-black, never cold */
-  --color-text-secondary: var(--color-neutral-600);
-  --color-text-muted: var(--color-neutral-300);
+  --color-text-secondary: var(--color-neutral-700);
+  --color-text-muted: var(--color-neutral-600);
   --color-text-on-dark: var(--color-cream-50);
 
-  /* Interactive */
-  --color-cta: var(--color-primary-700);
+  /* Interactive
+     Filled buttons pair a dark fill with --color-text-on-dark; the bright
+     accent variants pair a light fill with --color-text. Every rest/hover/
+     pressed pair below clears WCAG AA (4.5:1) for normal-weight text. */
+  --color-cta: var(--color-primary-700); /* 5.91:1 on cream-50 */
+  --color-cta-hover: var(--color-primary-800); /* 9.16:1 */
+  --color-cta-pressed: var(--color-primary-900); /* 13.65:1 */
+  --color-destructive: var(--color-coral-700); /* 6.54:1 */
+  --color-destructive-hover: var(--color-coral-800); /* 9.83:1 */
+  --color-destructive-pressed: var(--color-coral-900); /* 14.04:1 */
   --color-badge-seasonal: var(--color-tertiary-300);
   --color-badge-level: var(--color-primary-200);
   --color-star: var(--color-secondary-400);
   --color-error: var(--color-coral-500);
+  --color-error-border: var(--color-coral-600);
+  --color-error-text: var(--color-coral-700);
 
   --breakpoint-sm: 40rem;
   --breakpoint-md: 48rem;
