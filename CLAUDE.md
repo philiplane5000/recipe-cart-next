@@ -59,7 +59,9 @@ RAC ships **unstyled** primitives — styling them ourselves is the intended usa
 
 - `composeTailwindRenderProps` → `composeRenderProps` (real barrel export) + `tailwind-merge`.
 - `Description` → RAC's `<Text slot="description">`.
-- Drive variant state from RAC render-prop booleans (`isFocusVisible`, `isInvalid`, `isDisabled`, `isPending`, …) passed into a `tv`, as in `Button.tsx` / `TextField.tsx`. There is **no** `tailwindcss-react-aria-components` plugin and no `@custom-variant`, so `pressed:` / `data-*` Tailwind variant prefixes do **not** work — use the render-prop pattern instead.
+- Drive variant state from RAC render-prop booleans (`isFocusVisible`, `isInvalid`, `isDisabled`, `isPending`, …) passed into a `tv`, as in `Button.tsx` / `TextField.tsx`. This is the default: it needs no Tailwind configuration and it is the only option for state RAC exposes solely as a render prop.
+- The one exception is `pressed:`. There is **no** `tailwindcss-react-aria-components` plugin, but `src/app/globals.css` declares the variant by hand — `@custom-variant pressed (&[data-pressed]);` — so `pressed:` prefixes **do** work, and `Button.tsx` relies on them for its press states. Do not delete that declaration or those classes: Tailwind emits nothing for an undeclared variant, so every button would lose its press feedback with no build error.
+- Any **other** `data-*` prefix (`data-hovered:`, `data-selected:`, …) does **not** work until you add its own `@custom-variant` line alongside that one. Prefer a render prop over adding declarations.
 
 ### Design System
 

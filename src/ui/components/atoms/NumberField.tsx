@@ -20,6 +20,14 @@ export interface NumberFieldProps extends Omit<RACTextFieldProps, 'type'> {
   /** Hard floor. Typing or stepping below it snaps back here. @default 0 */
   min?: number;
   inputMode?: 'numeric' | 'decimal';
+  /**
+   * Native step granularity. Must be `'any'` for fractional input: an
+   * `<input type="number">` with no `step` gets the HTML default of 1 (stepping
+   * from `min`), so 1.5 is a `stepMismatch` and the browser blocks submission of
+   * the whole form under `validationBehavior="native"`.
+   * @default `'any'` when inputMode is 'decimal', otherwise 1
+   */
+  step?: number | 'any';
   errorMessage?: string | ((validation: ValidationResult) => string);
 }
 
@@ -40,6 +48,7 @@ export function NumberField({
   placeholder,
   min = 0,
   inputMode = 'numeric',
+  step = inputMode === 'decimal' ? 'any' : 1,
   value: controlledValue,
   defaultValue,
   onChange,
@@ -85,6 +94,7 @@ export function NumberField({
       <Input
         type="number"
         min={min}
+        step={step}
         inputMode={inputMode}
         placeholder={placeholder}
         className={composeRenderProps('', (className, renderProps) =>

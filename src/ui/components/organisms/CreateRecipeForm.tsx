@@ -1,5 +1,5 @@
 'use client';
-import { useActionState, useState } from 'react';
+import { useActionState } from 'react';
 import { Form as RACForm } from 'react-aria-components';
 import {
   CREATE_RECIPE_INITIAL_STATE,
@@ -48,12 +48,13 @@ export interface CreateRecipeFormProps {
  * reset. useActionState surfaces only server-side persistence failures, shown as
  * a banner; `isPending` drives the submit button.
  *
- * Form reset: a returned (error) state resets *uncontrolled* fields. Title and
- * description are controlled here so they survive it; the NumberFields are
- * internally controlled too. The repeatable groups are uncontrolled, so the
- * action echoes their submitted values back in `state.values` and they're
- * remounted on `state.attempt` to pick them up as fresh defaultValues —
- * nothing the user typed is lost on a failed save.
+ * Form reset: React 19 resets the form once the action settles, and React Aria
+ * re-emits that reset through every field's onChange — so NO field survives it
+ * on its own, controlled or not (see CreateRecipeSubmittedValues for the
+ * mechanism). Every field is therefore seeded from `state.values`, and the whole
+ * form body is keyed on `state.attempt` so one remount re-reads every
+ * `defaultValue`. The reset then restores each field to the value that was
+ * submitted rather than to empty, and nothing the user typed is lost.
  *
  * Deferred to a follow-up PR: image (optional in the schema, so save works
  * without it).
@@ -63,9 +64,9 @@ export function CreateRecipeForm({ action }: CreateRecipeFormProps) {
     action,
     CREATE_RECIPE_INITIAL_STATE,
   );
-  // Controlled so their values survive the post-action form reset (see above).
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  // Values submitted by the attempt that just failed, used to re-seed every
+  // field below. Undefined on first render.
+  const seed = state.values?.scalars;
 
   return (
     <RACForm
@@ -82,149 +83,166 @@ export function CreateRecipeForm({ action }: CreateRecipeFormProps) {
         </div>
       )}
 
-      {/* Basics — name (required), description (required) */}
-      <fieldset className="border-line bg-surface-raised rounded-2xl border p-6">
-        <legend className="text-text-secondary px-2 text-sm font-medium">
-          Basics
-        </legend>
-        <div className="flex flex-col gap-4 pt-2">
-          <TextField
-            name="name"
-            label="Title"
-            placeholder="e.g., Heirloom Tomato & Basil Galette"
-            value={title}
-            onChange={setTitle}
-            isRequired
-          />
-          <TextArea
-            name="description"
-            label="Description"
-            placeholder="A short blurb — what makes this dish worth cooking?"
-            maxLength={DESCRIPTION_MAX_LENGTH}
-            value={description}
-            onChange={setDescription}
-            isRequired
-          />
-        </div>
-      </fieldset>
-
-      {/* Details — servings (required), preparationTimes (optional).
-          Visibility is omitted for now; see the component doc above. */}
-      <fieldset className="border-line bg-surface-raised rounded-2xl border p-6">
-        <legend className="text-text-secondary px-2 text-sm font-medium">
-          Details
-        </legend>
-        <div className="flex flex-col gap-4 pt-2">
-          <NumberField
-            name="servings"
-            label="Servings"
-            placeholder="e.g., 4"
-            isRequired
-            // Floor is 0 (NumberField); this adds the business minimum of 1.
-            validate={(value) =>
-              value && Number(value) < 1 ? 'Servings must be at least 1.' : null
-            }
-          />
-          <PreparationTimesField />
-        </div>
-      </fieldset>
-
-      {/* Ingredients — required, array of { name, quantity, unit?, notes? } */}
-      <fieldset className="border-line bg-surface-raised rounded-2xl border p-6">
-        <legend className="text-text-secondary px-2 text-sm font-medium">
-          Ingredients
-        </legend>
-        <div className="flex flex-col gap-4 pt-2">
-          {/* key={state.attempt} forces a remount on each failed submit so the
-              restored values land as fresh defaultValues — React only reads
-              defaultValue on mount, so a re-render alone wouldn't refill them. */}
-          <IngredientsField
-            key={state.attempt}
-            defaultItems={state.values?.ingredients}
-          />
-        </div>
-      </fieldset>
-
-      {/* Steps — required, ordered array of strings */}
-      <fieldset className="border-line bg-surface-raised rounded-2xl border p-6">
-        <legend className="text-text-secondary px-2 text-sm font-medium">
-          Steps
-        </legend>
-        <div className="flex flex-col gap-4 pt-2">
-          <StringListField
-            key={state.attempt}
-            name="step"
-            itemLabel="Step"
-            placeholder="Describe this step…"
-            defaultItems={state.values?.steps}
-            multiline
-            ordered
-            required
-          />
-        </div>
-      </fieldset>
-
-      {/* ---- Optional sections ---- */}
-
-      {/* Nutrition (optional) — per-serving numbers */}
-      <fieldset className="border-line bg-surface-raised rounded-2xl border p-6">
-        <legend className="text-text-secondary px-2 text-sm font-medium">
-          Nutrition <span className="text-text-secondary">(optional)</span>
-        </legend>
-        <div className="flex flex-col gap-4 pt-2">
-          {/* Calories leads as the headline total (nutrition-label convention),
-              divided from the six macro/micro components below, which fill an
-              even 3×2 (2×3 on mobile) grid so no lone input orphans a row. */}
-          <div className="border-line border-b pb-4">
-            <NumberField
-              name="calories"
-              label="Total Calories"
-              placeholder="kcal per serving"
-              className="sm:max-w-xs"
+      {/* key={state.attempt} remounts every field on each failed submit so the
+          restored values land as fresh defaultValues — React only reads
+          defaultValue on mount, so a re-render alone wouldn't refill them. The
+          submit button stays outside so it keeps focus across attempts. */}
+      <div key={state.attempt} className="flex flex-col gap-6">
+        {/* Basics — name (required), description (required) */}
+        <fieldset className="border-line bg-surface-raised rounded-2xl border p-6">
+          <legend className="text-text-secondary px-2 text-sm font-medium">
+            Basics
+          </legend>
+          <div className="flex flex-col gap-4 pt-2">
+            <TextField
+              name="name"
+              label="Title"
+              placeholder="e.g., Heirloom Tomato & Basil Galette"
+              defaultValue={seed?.name}
+              isRequired
+            />
+            <TextArea
+              name="description"
+              label="Description"
+              placeholder="A short blurb — what makes this dish worth cooking?"
+              maxLength={DESCRIPTION_MAX_LENGTH}
+              defaultValue={seed?.description}
+              isRequired
             />
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <NumberField
-              name="carbohydrates"
-              label="Carbs (g)"
-              inputMode="decimal"
-            />
-            <NumberField name="fat" label="Fat (g)" inputMode="decimal" />
-            <NumberField
-              name="protein"
-              label="Protein (g)"
-              inputMode="decimal"
-            />
-            <NumberField
-              name="saturatedFat"
-              label="Saturated fat (g)"
-              inputMode="decimal"
-            />
-            <NumberField
-              name="sodium"
-              label="Sodium (mg)"
-              inputMode="decimal"
-            />
-            <NumberField name="sugar" label="Sugar (g)" inputMode="decimal" />
-          </div>
-        </div>
-      </fieldset>
+        </fieldset>
 
-      {/* Tags (optional) — array of strings */}
-      <fieldset className="border-line bg-surface-raised rounded-2xl border p-6">
-        <legend className="text-text-secondary px-2 text-sm font-medium">
-          Tags <span className="text-text-secondary">(optional)</span>
-        </legend>
-        <div className="flex flex-col gap-4 pt-2">
-          <StringListField
-            key={state.attempt}
-            name="tag"
-            itemLabel="Tag"
-            placeholder="e.g., vegetarian"
-            defaultItems={state.values?.tags}
-          />
-        </div>
-      </fieldset>
+        {/* Details — servings (required), preparationTimes (optional).
+            Visibility is omitted for now; see the component doc above. */}
+        <fieldset className="border-line bg-surface-raised rounded-2xl border p-6">
+          <legend className="text-text-secondary px-2 text-sm font-medium">
+            Details
+          </legend>
+          <div className="flex flex-col gap-4 pt-2">
+            <NumberField
+              name="servings"
+              label="Servings"
+              placeholder="e.g., 4"
+              defaultValue={seed?.servings}
+              isRequired
+              // Floor is 0 (NumberField); this adds the business minimum of 1.
+              validate={(value) =>
+                value && Number(value) < 1
+                  ? 'Servings must be at least 1.'
+                  : null
+              }
+            />
+            <PreparationTimesField
+              defaultPrep={seed?.prepMinutes}
+              defaultCook={seed?.cookMinutes}
+            />
+          </div>
+        </fieldset>
+
+        {/* Ingredients — required, array of { name, quantity, unit?, notes? } */}
+        <fieldset className="border-line bg-surface-raised rounded-2xl border p-6">
+          <legend className="text-text-secondary px-2 text-sm font-medium">
+            Ingredients
+          </legend>
+          <div className="flex flex-col gap-4 pt-2">
+            <IngredientsField defaultItems={state.values?.ingredients} />
+          </div>
+        </fieldset>
+
+        {/* Steps — required, ordered array of strings */}
+        <fieldset className="border-line bg-surface-raised rounded-2xl border p-6">
+          <legend className="text-text-secondary px-2 text-sm font-medium">
+            Steps
+          </legend>
+          <div className="flex flex-col gap-4 pt-2">
+            <StringListField
+              name="step"
+              itemLabel="Step"
+              placeholder="Describe this step…"
+              defaultItems={state.values?.steps}
+              multiline
+              ordered
+              required
+            />
+          </div>
+        </fieldset>
+
+        {/* ---- Optional sections ---- */}
+
+        {/* Nutrition (optional) — per-serving numbers */}
+        <fieldset className="border-line bg-surface-raised rounded-2xl border p-6">
+          <legend className="text-text-secondary px-2 text-sm font-medium">
+            Nutrition <span className="text-text-secondary">(optional)</span>
+          </legend>
+          <div className="flex flex-col gap-4 pt-2">
+            {/* Calories leads as the headline total (nutrition-label convention),
+                divided from the six macro/micro components below, which fill an
+                even 3×2 (2×3 on mobile) grid so no lone input orphans a row. */}
+            <div className="border-line border-b pb-4">
+              <NumberField
+                name="calories"
+                label="Total Calories"
+                placeholder="kcal per serving"
+                defaultValue={seed?.calories}
+                className="sm:max-w-xs"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <NumberField
+                name="carbohydrates"
+                label="Carbs (g)"
+                inputMode="decimal"
+                defaultValue={seed?.carbohydrates}
+              />
+              <NumberField
+                name="fat"
+                label="Fat (g)"
+                inputMode="decimal"
+                defaultValue={seed?.fat}
+              />
+              <NumberField
+                name="protein"
+                label="Protein (g)"
+                inputMode="decimal"
+                defaultValue={seed?.protein}
+              />
+              <NumberField
+                name="saturatedFat"
+                label="Saturated fat (g)"
+                inputMode="decimal"
+                defaultValue={seed?.saturatedFat}
+              />
+              <NumberField
+                name="sodium"
+                label="Sodium (mg)"
+                inputMode="decimal"
+                defaultValue={seed?.sodium}
+              />
+              <NumberField
+                name="sugar"
+                label="Sugar (g)"
+                inputMode="decimal"
+                defaultValue={seed?.sugar}
+              />
+            </div>
+          </div>
+        </fieldset>
+
+        {/* Tags (optional) — array of strings */}
+        <fieldset className="border-line bg-surface-raised rounded-2xl border p-6">
+          <legend className="text-text-secondary px-2 text-sm font-medium">
+            Tags <span className="text-text-secondary">(optional)</span>
+          </legend>
+          <div className="flex flex-col gap-4 pt-2">
+            <StringListField
+              name="tag"
+              itemLabel="Tag"
+              placeholder="e.g., vegetarian"
+              defaultItems={state.values?.tags}
+            />
+          </div>
+        </fieldset>
+      </div>
 
       {/* Image (optional, oneOf upload | url) is intentionally deferred to a
           follow-up PR. It's optional in the schema, so recipes save without it. */}

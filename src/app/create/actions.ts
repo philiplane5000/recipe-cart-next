@@ -11,7 +11,7 @@ import type {
   RecipeVisibility,
 } from '@/models/recipe';
 import { parseRecipe, RecipeValidationError } from '@/models/recipe/parse';
-import type { CreateRecipeState } from './types';
+import type { CreateRecipeState, CreateRecipeSubmittedValues } from './types';
 
 /** Parse a FormData value to a finite number, or undefined when blank/invalid. */
 function toNumber(value: FormDataEntryValue | null): number | undefined {
@@ -51,8 +51,11 @@ export async function createRecipe(
   prevState: CreateRecipeState,
   formData: FormData,
 ): Promise<CreateRecipeState> {
-  const name = String(formData.get('name') ?? '').trim();
-  const description = String(formData.get('description') ?? '').trim();
+  /** Trimmed string for a scalar field, used for parsing and for the echo. */
+  const field = (key: string) => String(formData.get(key) ?? '').trim();
+
+  const name = field('name');
+  const description = field('description');
   const servings = toNumber(formData.get('servings')) ?? 0;
   // Visibility is not surfaced in the form yet (no auth / per-user ownership),
   // so this defaults to 'private' when the field is absent. It already honors a
@@ -111,9 +114,29 @@ export async function createRecipe(
   const hasNutrition = Object.keys(nutrition).length > 0;
 
   // Echoed back on any failure: React 19 resets the form after the action
-  // settles, which blanks every uncontrolled input. Without this the user is
-  // told to try again against an empty set of rows.
-  const values = { ingredients, steps, tags };
+  // settles, and React Aria re-emits that reset through every field's onChange,
+  // so controlled fields are blanked too (see CreateRecipeSubmittedValues).
+  // Every field is echoed as submitted and re-seeded on the retry; without this
+  // the user is told to try again against an empty form.
+  const values: CreateRecipeSubmittedValues = {
+    ingredients,
+    steps,
+    tags,
+    scalars: {
+      name,
+      description,
+      servings: field('servings'),
+      prepMinutes: field('prepMinutes'),
+      cookMinutes: field('cookMinutes'),
+      calories: field('calories'),
+      carbohydrates: field('carbohydrates'),
+      fat: field('fat'),
+      protein: field('protein'),
+      saturatedFat: field('saturatedFat'),
+      sodium: field('sodium'),
+      sugar: field('sugar'),
+    },
+  };
   const failure = (error: string): CreateRecipeState => ({
     error,
     values,

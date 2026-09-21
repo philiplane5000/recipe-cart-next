@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getDb } from '@/lib/db/client';
 
 const COLLECTION = 'recipes';
 const SCHEMA_PATH = join(
@@ -26,13 +25,21 @@ const SCHEMA_PATH = join(
  * Run: npm run db:validator
  *
  * `--soft` downgrades every failure to a warning and exits 0. The `predev`
- * hook uses it so that a stopped database, or documents needing attention,
- * never block `npm run dev` — front-end work shouldn't require Docker.
+ * hook uses it so that a stopped database, an absent .env.local, or documents
+ * needing attention never block `npm run dev` — front-end work shouldn't
+ * require Docker. For that to hold, every failure has to be reachable by the
+ * `.catch()` at the bottom of this file: hence `--env-file-if-exists` in the
+ * `db:validator` script and the dynamic import of the db client below.
  */
 const SOFT = process.argv.includes('--soft');
 
 async function installValidator() {
   const validator = JSON.parse(readFileSync(SCHEMA_PATH, 'utf8'));
+  // Imported here, not at module scope: src/lib/db/client throws while its
+  // module body evaluates when MONGODB_URI is unset, and that happens before
+  // the .catch() below is attached — so --soft could never see it, and the
+  // predev hook hard-failed `npm run dev` on any checkout without .env.local.
+  const { getDb } = await import('@/lib/db/client');
   const db = await getDb();
 
   const existing = await db.listCollections({ name: COLLECTION }).toArray();
@@ -96,9 +103,10 @@ installValidator()
     const message = reason instanceof Error ? reason.message : String(reason);
     if (SOFT) {
       console.warn(
-        `\n[db:validator] Skipped — could not reach MongoDB (${message}).\n` +
+        `\n[db:validator] Skipped — ${message}\n` +
           `The dev server will still start, but the recipes collection is\n` +
-          `unvalidated. Run "docker compose up -d" then "npm run db:validator".\n`,
+          `unvalidated. Create .env.local with MONGODB_URI (see CLAUDE.md), run\n` +
+          `"docker compose up -d", then "npm run db:validator".\n`,
       );
       return;
     }

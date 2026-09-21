@@ -14,7 +14,7 @@ Written against the implementation as of the `feature/create` branch.
 | -------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | `src/app/create/page.tsx`                                      | Server Component shell. Injects the action.                                            |
 | `src/app/create/actions.ts`                                    | `createRecipe` — the server action. FormData → `Recipe` → DB.                          |
-| `src/app/create/types.ts`                                      | `CreateRecipeState` — the `useActionState` state contract.                             |
+| `src/app/create/types.ts`                                      | `CreateRecipeState` / `CreateRecipeSubmittedValues` — the `useActionState` contract.   |
 | `src/ui/components/organisms/CreateRecipeForm.tsx`             | The whole form. Client Component.                                                      |
 | `src/ui/components/molecules/IngredientsField.tsx`             | Repeatable ingredient rows.                                                            |
 | `src/ui/components/molecules/StringListField.tsx`              | Repeatable string rows (steps, tags).                                                  |
@@ -34,7 +34,7 @@ Written against the implementation as of the `feature/create` branch.
 
 ```mermaid
 flowchart TD
-    A["User fills form<br/>(uncontrolled + controlled inputs)"] --> B{"Client validation<br/>native isRequired + RAC validate"}
+    A["User fills form<br/>(uncontrolled inputs, seeded via defaultValue)"] --> B{"Client validation<br/>native isRequired + type/step + RAC validate"}
     B -- blocked --> A
     B -- passes --> C["React serialises FormData<br/>POSTs to the server action"]
     C --> D["createRecipe(prevState, formData)"]
@@ -47,8 +47,8 @@ flowchart TD
     V -- "rejected (code 121)" --> R["describeDocumentValidationFailure()<br/>field-level reasons"]
     R --> G
     V -- accepted --> I["revalidatePath('/')<br/>redirect('/')"]
-    G --> J["React 19 resets the form"]
-    J --> K["Banner renders;<br/>molecules remount on key={attempt}<br/>and re-seed from state.values"]
+    G --> J["React 19 resets the form<br/>(RAC re-emits it through every onChange)"]
+    J --> K["Banner renders;<br/>form body remounts on key={attempt}<br/>and every field re-seeds from state.values"]
     K --> A
 ```
 
@@ -116,16 +116,27 @@ const [state, formAction, isPending] = useActionState(
 
 > **React 19 resets the form after a form action completes.**
 
-Not only on success — on _any_ settle, including a returned error state. Every
-**uncontrolled** input is blanked. This single fact drives:
+Not only on success — on _any_ settle, including a returned error state.
 
-- Title and description being controlled (`useState` in the organism).
-- `NumberField` being internally controlled.
-- The entire `values` + `attempt` echo-back machinery for repeatable rows.
+**Being controlled is not protection.** React Aria re-emits that reset through
+every field's `onChange`: `useTextField` registers
+`useFormReset(ref, props.defaultValue ?? initialValue, setValue)`, and
+`useControlledState`'s setter invokes `onChange` even in controlled mode
+("Always trigger a re-render, even when controlled"). A controlled field is
+therefore restored to whatever it held **at mount** — so holding title and
+description in a `useState('')` was _actively wiping_ the user's text on every
+failed save, not preserving it.
+
+What does work is **seeding**. Because the reset restores
+`props.defaultValue ?? initialValue`, a field that _mounts_ already holding the
+submitted value is restored to that value. So every field — not just the
+repeatable rows — is echoed back in `state.values` and re-seeded from it, and
+the whole form body is keyed on `attempt` so a single remount re-reads every
+`defaultValue` (§7, §8).
 
 It is also why **per-field validation deliberately stays on the client**. If a
 missing required field were reported by returning an error state, the round trip
-would wipe the form the user is trying to correct. Client-side validation is
+would reset the form the user is trying to correct. Client-side validation is
 inline, instant, and never triggers a reset.
 
 ---
@@ -200,19 +211,20 @@ the API returns as a 422 `details` array.
 
 ### Where each rule actually lives
 
-| Rule                      |        Client        |  `parseRecipe`  | Collection validator |
-| ------------------------- | :------------------: | :-------------: | :------------------: |
-| `name` present            |          ✅          |       ✅        |    ✅ (presence)     |
-| `description` present     |          ✅          | — (allows `""`) |    ✅ (presence)     |
-| `description` ≤ 280 chars | ✅ (native truncate) |       ✅        |          ✅          |
-| `servings` present        |          ✅          |       ✅        |          ✅          |
-| `servings` ≥ 1            |          ✅          | ❌ **allows 0** |          ❌          |
-| Numbers non-negative      |      ✅ (clamp)      |       ✅        |          ❌          |
-| ≥ 1 ingredient            |          ✅          |       ✅        |          ❌          |
-| Ingredient `name` present |          ✅          |       ✅        |          ✅          |
-| Ingredient `unit`         |       optional       |    optional     |       optional       |
-| ≥ 1 non-blank step        |          ✅          |       ✅        |          ❌          |
-| `visibility` enum         |         n/a          | ✅ (+ default)  |          ✅          |
+| Rule                      |                        Client                        |  `parseRecipe`  | Collection validator |
+| ------------------------- | :--------------------------------------------------: | :-------------: | :------------------: |
+| `name` present            |                          ✅                          |       ✅        |    ✅ (presence)     |
+| `description` present     |                          ✅                          | — (allows `""`) |    ✅ (presence)     |
+| `description` ≤ 280 chars |                 ✅ (native truncate)                 |       ✅        |          ✅          |
+| `servings` present        |                          ✅                          |       ✅        |          ✅          |
+| `servings` ≥ 1            |                          ✅                          | ❌ **allows 0** |          ❌          |
+| Numbers non-negative      |                      ✅ (clamp)                      |       ✅        |          ❌          |
+| Fractional values allowed | only where `step="any"` (i.e. `inputMode="decimal"`) |  ✅ any finite  |  ✅ `int`\|`double`  |
+| ≥ 1 ingredient            |                          ✅                          |       ✅        |          ❌          |
+| Ingredient `name` present |                          ✅                          |       ✅        |          ✅          |
+| Ingredient `unit`         |                       optional                       |    optional     |       optional       |
+| ≥ 1 non-blank step        |                          ✅                          |       ✅        |          ❌          |
+| `visibility` enum         |                         n/a                          | ✅ (+ default)  |          ✅          |
 
 The ❌ and the `—` in the `parseRecipe` column are known divergences,
 deliberate and documented in §11 — not oversights.
@@ -245,8 +257,8 @@ single repeated names read in document order.
 
 | Form field                    | → `Recipe`                          | Notes                                              |
 | ----------------------------- | ----------------------------------- | -------------------------------------------------- |
-| `name`                        | `name`                              | Trimmed. Controlled.                               |
-| `description`                 | `description`                       | Trimmed, capped at 280. Controlled.                |
+| `name`                        | `name`                              | Trimmed. Seeded from `state.values` (§8).          |
+| `description`                 | `description`                       | Trimmed, capped at 280. Seeded (§8).               |
 | `servings`                    | `servings`                          | `toNumber(...) ?? 0`.                              |
 | `prepMinutes` / `cookMinutes` | `preparationTimes.prep` / `.cook`   | Either alone ⇒ other is 0.                         |
 | `totalMinutes`                | —                                   | **Submitted but ignored.** Recomputed server-side. |
@@ -282,48 +294,75 @@ blank. Removal never renumbers, so the mapping survives arbitrary add/remove.
 
 ### Why a `key` remount is required
 
-React reads `defaultValue` **only on mount**. After the form reset blanks an
-input, re-rendering it with a new `defaultValue` does nothing at all. So the
-action returns an incrementing `attempt`, used as a key:
+React reads `defaultValue` **only on mount**. Re-rendering an input with a new
+`defaultValue` does nothing at all. So the action returns an incrementing
+`attempt`, used as a key on **one** wrapper around the whole form body:
 
 ```tsx
-<IngredientsField
-  key={state.attempt}
-  defaultItems={state.values?.ingredients}
-/>
+<div key={state.attempt} className="flex flex-col gap-6">
+  {/* every fieldset */}
+</div>
 ```
 
 A changed key unmounts the old subtree and mounts a fresh one, whose `useState`
-initialiser runs against the new seed. This is also why `attempt` lives in the
-action's return value rather than in client state — the action owns it, so the
-key changes exactly once per failed attempt.
+initialisers and `defaultValue`s run against the new seed. This is also why
+`attempt` lives in the action's return value rather than in client state — the
+action owns it, so the key changes exactly once per failed attempt.
+
+One key on the body, rather than one per repeatable group, because §4 means
+_every_ field needs re-seeding, not just the rows. The submit button sits
+**outside** the keyed wrapper so it keeps focus across attempts.
 
 > This works regardless of whether React's reset runs before or after the
-> remount: React's `defaultValue` sets the DOM `value` _attribute_, which is
-> precisely what a native form reset restores to.
+> remount. If the reset lands first, the remount replaces those inputs with
+> freshly seeded ones anyway; if it lands second, it restores each field to
+> `props.defaultValue ?? initialValue`, which is now the submitted value.
+> `defaultValue` also sets the DOM `value` _attribute_, which is precisely what
+> a native form reset restores to.
 
 ---
 
 ## 8. What survives a failed submit
 
-| Field                          | Mechanism                                | Survives?     |
-| ------------------------------ | ---------------------------------------- | ------------- |
-| Title, description             | `useState` in the organism               | ✅ controlled |
-| Servings, nutrition, prep/cook | `useState` inside `NumberField`          | ✅ controlled |
-| Ingredients, steps, tags       | `state.values` + `key={attempt}` remount | ✅ re-seeded  |
+Everything, by **one** mechanism: the action echoes the submitted values back in
+`state.values`, and the form body remounts on `key={state.attempt}` so every
+field re-reads its `defaultValue`.
 
-Round-tripping through the server means restored values are the **normalised**
-ones: trimmed, blanks dropped, a blank quantity echoed back as `0`.
+| Field                    | Seeded from                                                                | Survives?    |
+| ------------------------ | -------------------------------------------------------------------------- | ------------ |
+| Title, description       | `values.scalars.{name,description}`                                        | ✅ re-seeded |
+| Servings, nutrition      | `values.scalars.*`                                                         | ✅ re-seeded |
+| Prep / cook              | `values.scalars.{prepMinutes,cookMinutes}` → `PreparationTimesField` props | ✅ re-seeded |
+| Ingredients, steps, tags | `values.{ingredients,steps,tags}`                                          | ✅ re-seeded |
+
+> ⚠️ There is no "controlled so it survives" shortcut — see §4. Every new field
+> must be added to `CreateRecipeSubmittedValues` and seeded, or the post-action
+> reset silently blanks it.
+
+The scalar fields are echoed as the **raw submitted strings**
+(`CreateRecipeScalarValues`), not parsed numbers, so a field left blank comes
+back blank rather than as `"0"`. The repeatable groups are echoed as parsed
+values, so those restore **normalised**: trimmed, blanks dropped, a blank
+quantity echoed back as `0`.
 
 ---
 
 ## 9. Atom contracts worth knowing
 
-**`NumberField`** is always controlled internally so its value survives the
-reset. It clamps below `min` (default 0) on change and announces the clamp
-through a polite live region — a silent correction would be a WCAG 3.3.1
-failure. Accepts `value`/`onChange` (as `PreparationTimesField` does) or
-self-manages from `defaultValue`.
+**`NumberField`** is controlled internally so it can **clamp** below `min`
+(default 0) on change, announcing the clamp through a polite live region — a
+silent correction would be a WCAG 3.3.1 failure. Being controlled does _not_
+make it survive the form reset (§4); seeding it via `defaultValue` does.
+Accepts `value`/`onChange` (as `PreparationTimesField` does) or self-manages
+from `defaultValue`.
+
+It also sets `step` on the native input, defaulting to **`'any'` when
+`inputMode="decimal"`** and `1` otherwise. This is load-bearing, not cosmetic:
+an `<input type="number">` with no `step` inherits HTML's default of `1`
+(stepping from `min`), so `1.5` is a `stepMismatch` and — under the form's
+`validationBehavior="native"` — the browser silently refuses to submit the
+**entire form**. Without it, no recipe with a fractional quantity could be
+saved at all. Give any new fractional field `inputMode="decimal"`.
 
 **`TextArea`** enforces `maxLength` natively. The visible counter is
 `aria-hidden` (announcing a number every keystroke is noise); a separate
@@ -388,7 +427,18 @@ validation was bypassed or the client and server rule sets have drifted.
    validates `image`, but nothing in the form emits it yet.
 8. **`IngredientsField` and `StringListField` duplicate the row state machine.**
    A shared `useRepeatableRows(min)` hook would remove it.
-9. **No test runner.** Everything here has been verified manually.
+9. **A rejected connection is cached for the life of a dev process.**
+   `src/lib/db/client/index.ts` stores the promise from `client.connect()` in a
+   global, so if it rejects, every later request re-awaits that same rejection
+   and the dev server never recovers — even once Mongo is back. Needs a
+   `.catch()` that clears the global so the next call retries. Out of scope for
+   this form, but it is what you hit when testing the failure path (§12).
+10. **Nothing enforces integer minutes or servings.** `step="1"` on those inputs
+    is a client-side nicety only; `parseRecipe` accepts any finite non-negative
+    number, so `POST /api/recipes` can store `prep: 0.1`, and
+    `total: prep + cook` is then a raw float sum (`0.30000000000000004`).
+11. **No test runner.** Everything here has been verified manually, including
+    the failed-save path in a real browser.
 
 ---
 
@@ -420,8 +470,21 @@ Expect `201` plus a document whose `visibility` is `"private"`.
 **The form path.** Invoking a `useActionState` server action over raw HTTP means
 reproducing React's RSC encoding — not worth it. Click through `/create`
 instead. To exercise the failure path, `docker compose stop mongodb`, submit,
-and confirm the banner appears **and every ingredient/step/tag you typed is
-still on screen**.
+and confirm the banner appears **and every field you typed is still on screen** —
+title, description, servings, prep/cook and nutrition included, not just the
+repeatable rows. Those scalar fields are the regression-prone ones (§4), so
+check them specifically. Put a **fractional quantity** (e.g. `2.25`) in an
+ingredient row while you are there: if the form submits at all, `step` is
+still wired correctly (§9).
+
+Two things to expect, neither a bug in the form:
+
+- The failure takes **~30s**. Nothing sets `serverSelectionTimeoutMS`, so the
+  driver waits out its 30-second default before rejecting.
+- Afterwards the dev server keeps failing even once Mongo is back, returning an
+  instant 500 with the stale `ECONNREFUSED`. `src/lib/db/client/index.ts` caches
+  the promise from `client.connect()`, so a _rejected_ one is cached for the
+  life of the process. **Restart `npm run dev`** after testing this path.
 
 **The collection validator.** Confirm it is actually attached — an empty
 `options` means it is not:
@@ -438,8 +501,23 @@ deliberately invalid document cast through `unknown`, and run
 `describeDocumentValidationFailure` on what it throws.
 
 `npm run dev` attaches it automatically via `predev`. That hook runs with
-`--soft`, so a stopped database warns and lets the dev server start anyway;
-running `npm run db:validator` directly stays strict and exits non-zero.
+`--soft`, so a stopped database — **or a missing `.env.local`** — warns and lets
+the dev server start anyway; running `npm run db:validator` directly stays strict
+and exits non-zero.
+
+For `--soft` to mean anything, every failure has to be **reachable by the
+`.catch()`** at the bottom of `installValidator.ts`. Two things guard that, and
+both are easy to undo by accident:
+
+- the script is launched with `--env-file-if-exists=.env.local`, not
+  `--env-file=` — Node exits with code **9** before running any JS when an
+  `--env-file` target is missing, which no `.catch()` can intercept;
+- `@/lib/db/client` is imported **dynamically inside the function**, because it
+  throws on a missing `MONGODB_URI` while its module body evaluates — i.e.
+  before the `.catch()` is even attached.
+
+Either one reverted, and `npm run dev` hard-fails on any checkout without a
+complete `.env.local`.
 
 **Always:** `npm run lint`, `npx tsc --noEmit`, `npm run build`.
 
@@ -447,13 +525,14 @@ running `npm run db:validator` directly stays strict and exits non-zero.
 
 ## 13. If you change X, check Y
 
-| Change                                 | Also check                                                                |
-| -------------------------------------- | ------------------------------------------------------------------------- |
-| Add/remove an ingredient sub-field     | The four-array zip in `actions.ts`; every row must still emit every input |
-| Make a field optional/required         | All three layers (§5) — they drift silently                               |
-| Touch `Button`'s `base` or `secondary` | The `text-2xl` contrast dependency (§9)                                   |
-| Add a field to `Recipe`                | `parseRecipe`, the JSON schema, and the action's assembly                 |
-| Add an uncontrolled input              | Whether it needs echoing in `CreateRecipeState.values`                    |
-| Change `submit()`'s signature          | Both callers: the action and the API route                                |
-| Edit `recipe-validation-schema.json`   | Re-run `npm run db:validator`; the file alone is inert                    |
-| Loosen a rule in `parseRecipe`         | Whether the collection validator still rejects it (drift ⇒ 422)           |
+| Change                                 | Also check                                                                               |
+| -------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Add/remove an ingredient sub-field     | The four-array zip in `actions.ts`; every row must still emit every input                |
+| Make a field optional/required         | All three layers (§5) — they drift silently                                              |
+| Touch `Button`'s `base` or `secondary` | The `text-2xl` contrast dependency (§9)                                                  |
+| Add a field to `Recipe`                | `parseRecipe`, the JSON schema, and the action's assembly                                |
+| Add **any** input                      | Echo it in `CreateRecipeSubmittedValues` and seed it — controlled is not enough (§4, §8) |
+| Add a fractional numeric field         | Give it `inputMode="decimal"` so `step="any"` (§9), or submit is blocked                 |
+| Change `submit()`'s signature          | Both callers: the action and the API route                                               |
+| Edit `recipe-validation-schema.json`   | Re-run `npm run db:validator`; the file alone is inert                                   |
+| Loosen a rule in `parseRecipe`         | Whether the collection validator still rejects it (drift ⇒ 422)                          |

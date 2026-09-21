@@ -2,6 +2,18 @@
 import { useState } from 'react';
 import { NumberField } from '@/ui/components/atoms/NumberField';
 
+export interface PreparationTimesFieldProps {
+  /**
+   * Seed prep/cook on mount, to restore what was submitted after a failed save.
+   * Read only on mount — the caller remounts via `key` to re-seed. Seeding also
+   * fixes what React Aria's form-reset propagation would otherwise blank: the
+   * reset restores each field to its mount-time value, so an empty mount meant
+   * the user's minutes were wiped (see CreateRecipeSubmittedValues).
+   */
+  defaultPrep?: string;
+  defaultCook?: string;
+}
+
 /**
  * Prep / cook / total minutes. Prep and cook are controlled inputs; total is
  * derived read-only. Fill-either semantics: entering just one counts the other
@@ -9,9 +21,12 @@ import { NumberField } from '@/ui/components/atoms/NumberField';
  * server (createRecipe) applies the same rule authoritatively. Both editable
  * fields clamp at 0 via NumberField, so total is never negative.
  */
-export function PreparationTimesField() {
-  const [prep, setPrep] = useState('');
-  const [cook, setCook] = useState('');
+export function PreparationTimesField({
+  defaultPrep,
+  defaultCook,
+}: PreparationTimesFieldProps = {}) {
+  const [prep, setPrep] = useState(defaultPrep ?? '');
+  const [cook, setCook] = useState(defaultCook ?? '');
 
   const toNum = (raw: string) =>
     raw.trim() !== '' && Number.isFinite(Number(raw)) ? Number(raw) : null;
