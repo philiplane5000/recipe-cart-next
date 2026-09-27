@@ -1,40 +1,44 @@
-import { describeDocumentValidationFailure } from '@/lib/db/documentValidation';
-import { submit, listAll } from '@/lib/db/recipes';
-import { parseRecipe, RecipeValidationError } from '@/models/recipe/parse';
+import {
+  describeDocumentValidationFailure,
+  toMessages,
+} from '@/lib/db/documentValidation';
+import { listAll, submit } from '@/lib/db/recipes';
+import { normalizeRecipeBody } from '@/models/recipe/normalize';
+import type { RecipeInput } from '@/models/recipe';
 
 /**
  * Creates a new recipe in the recipes collection.
  *
- * The body is untrusted and `request.json()` is typed `any`, so it must go
- * through parseRecipe before reaching submit() — otherwise a malformed body
- * type-checks as a Recipe and is inserted as-is. Bad input is a 400; only a
- * genuine persistence failure is a 500.
+ * The body is untrusted and `request.json()` is typed `any`, so it is never
+ * believed: `normalizeRecipeBody` shapes it without judging it, and the
+ * collection's `$jsonSchema` decides whether it is storable. That is the same
+ * authority the create form answers to, so neither write path can persist what the
+ * other would reject.
  *
- * @param request
+ * Bad input is a 422 naming the failing rules; only a genuine persistence failure
+ * is a 500.
  */
 export async function POST(request: Request) {
-  let recipe;
+  let body: unknown;
   try {
-    recipe = parseRecipe(await request.json());
-  } catch (reason) {
-    const message =
-      reason instanceof RecipeValidationError
-        ? reason.message
-        : 'Request body must be valid JSON';
-    return Response.json({ error: message }, { status: 400 });
+    body = normalizeRecipeBody(await request.json());
+  } catch {
+    return Response.json(
+      { error: 'Request body must be valid JSON' },
+      { status: 400 },
+    );
   }
 
   try {
-    const result = await submit(recipe);
+    // Cast, not trust: the collection validator is what actually checks this.
+    // The cast keeps submit()'s signature honest for its other caller.
+    const result = await submit(body as RecipeInput);
     return Response.json({ id: result.insertedId }, { status: 201 });
   } catch (reason) {
-    // The collection validator rejecting a parseRecipe-approved document means
-    // the two rule sets disagree: 422 (not 500) and name the failing rules.
-    const rejected = describeDocumentValidationFailure(reason);
-    if (rejected) {
-      console.error('recipes collection rejected document:', rejected);
+    const issues = describeDocumentValidationFailure(reason);
+    if (issues) {
       return Response.json(
-        { error: 'Document failed collection validation', details: rejected },
+        { error: 'Recipe failed validation', details: toMessages(issues) },
         { status: 422 },
       );
     }

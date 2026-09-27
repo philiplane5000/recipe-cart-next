@@ -1,5 +1,4 @@
 'use client';
-import { useState } from 'react';
 import {
   composeRenderProps,
   FieldError,
@@ -17,14 +16,23 @@ export interface NumberFieldProps extends Omit<RACTextFieldProps, 'type'> {
   label?: string;
   description?: string;
   placeholder?: string;
-  /** Hard floor. Typing or stepping below it snaps back here. @default 0 */
+  /**
+   * Native `min`. Under `validationBehavior="native"` the browser **enforces** this
+   * and blocks submission, so it should mirror the collection schema's `minimum`
+   * for the same field rather than being chosen independently.
+   * @default 0
+   */
   min?: number;
   inputMode?: 'numeric' | 'decimal';
   /**
-   * Native step granularity. Must be `'any'` for fractional input: an
-   * `<input type="number">` with no `step` gets the HTML default of 1 (stepping
-   * from `min`), so 1.5 is a `stepMismatch` and the browser blocks submission of
-   * the whole form under `validationBehavior="native"`.
+   * Native step granularity. **Load-bearing, not cosmetic:** an
+   * `<input type="number">` with no `step` inherits HTML's default of `1` (stepping
+   * from `min`), so `1.5` is a `stepMismatch` and the browser silently refuses to
+   * submit the **entire form**. Any field that accepts fractions must therefore
+   * carry `step="any"` — which `inputMode="decimal"` sets for you.
+   *
+   * It doubles as the whole-number rule for the fields that want one: `step={1}`
+   * mirrors the schema's `multipleOf: 1`.
    * @default `'any'` when inputMode is 'decimal', otherwise 1
    */
   step?: number | 'any';
@@ -32,15 +40,19 @@ export interface NumberFieldProps extends Omit<RACTextFieldProps, 'type'> {
 }
 
 /**
- * Numeric sibling of TextField, controlled so the value can never fall below
- * `min` (default 0): a below-floor entry is clamped on change and the input also
- * carries a native `min`. A clamp raises a polite, screen-reader-announced
- * warning wired to the input via RAC's description slot (WCAG 3.3.1). Being
- * controlled, its value also survives React 19's post-action form reset.
+ * Numeric sibling of TextField (src/ui/components/atoms/TextField.tsx): the same
+ * field shell with `type="number"`.
  *
- * Works controlled (`value` + `onChange`, e.g. PreparationTimesField deriving a
- * total) or self-managed (omit them; seed with `defaultValue`). Either way it
- * submits its current value under `name`.
+ * Its value is a **string**, like any text input — '' when untouched, which is
+ * what keeps "blank" distinguishable from a deliberate 0. Coercion belongs to
+ * the caller's schema, not here.
+ *
+ * Presentational only: it does not correct what the user types. An out-of-range
+ * entry is refused by the browser with a message rather than silently clamped — a
+ * silent correction is a WCAG 3.3.1 problem, an explicit message is not.
+ *
+ * Give any field that accepts fractions `inputMode="decimal"`. See `step`: without
+ * it the browser blocks submission of the whole form, with no error anywhere.
  */
 export function NumberField({
   label,
@@ -49,41 +61,12 @@ export function NumberField({
   min = 0,
   inputMode = 'numeric',
   step = inputMode === 'decimal' ? 'any' : 1,
-  value: controlledValue,
-  defaultValue,
-  onChange,
   errorMessage,
   ...props
 }: NumberFieldProps) {
-  const [internalValue, setInternalValue] = useState(defaultValue ?? '');
-  const [warning, setWarning] = useState<string | null>(null);
-  const value = controlledValue ?? internalValue;
-
-  const handleChange = (next: string) => {
-    let outgoing = next;
-    if (next.trim() !== '') {
-      const parsed = Number(next);
-      if (Number.isFinite(parsed) && parsed < min) {
-        outgoing = String(min);
-        setWarning(`Value can’t be below ${min}, so it was set to ${min}.`);
-      } else {
-        setWarning(null);
-      }
-    } else {
-      setWarning(null);
-    }
-    // Only own the state when uncontrolled; always forward to a parent.
-    if (controlledValue == null) setInternalValue(outgoing);
-    onChange?.(outgoing);
-  };
-
-  const message = warning ?? description;
-
   return (
     <RACTextField
       {...props}
-      value={value}
-      onChange={handleChange}
       className={composeRenderProps(props.className, (className) =>
         twMerge('flex flex-col gap-1.5 font-sans', className),
       )}
@@ -101,17 +84,11 @@ export function NumberField({
           textFieldInput({ ...renderProps, className }),
         )}
       />
-      {/* Persistent polite live region: empty by default, announces on clamp. */}
-      <Text
-        slot="description"
-        aria-live="polite"
-        className={twMerge(
-          'text-xs',
-          warning ? 'text-error-text' : 'text-text-secondary',
-        )}
-      >
-        {message ?? ''}
-      </Text>
+      {description && (
+        <Text slot="description" className="text-text-secondary text-xs">
+          {description}
+        </Text>
+      )}
       <FieldError className="text-error-text text-xs">
         {errorMessage}
       </FieldError>

@@ -2,31 +2,28 @@
 import { useState } from 'react';
 import { NumberField } from '@/ui/components/atoms/NumberField';
 
-export interface PreparationTimesFieldProps {
-  /**
-   * Seed prep/cook on mount, to restore what was submitted after a failed save.
-   * Read only on mount — the caller remounts via `key` to re-seed. Seeding also
-   * fixes what React Aria's form-reset propagation would otherwise blank: the
-   * reset restores each field to its mount-time value, so an empty mount meant
-   * the user's minutes were wiped (see CreateRecipeSubmittedValues).
-   */
-  defaultPrep?: string;
-  defaultCook?: string;
-}
-
 /**
- * Prep / cook / total minutes. Prep and cook are controlled inputs; total is
- * derived read-only. Fill-either semantics: entering just one counts the other
- * as 0 and shows the sum, so total is present whenever at least one is — the
- * server (createRecipe) applies the same rule authoritatively. Both editable
- * fields clamp at 0 via NumberField, so total is never negative.
+ * Prep / cook / total minutes.
+ *
+ * The only controlled fields in the form, and only because the total has to react
+ * to them. Being controlled changes nothing about submission — React Aria still
+ * renders a real input carrying `name` and `value`, so `readRecipeForm` reads them
+ * like any other field.
+ *
+ * **Total is not a form field.** It carries no `name`, so it is never submitted;
+ * `toRecipeInput` computes it authoritatively. There is no client-supplied total
+ * to forge and nothing for the two to disagree about.
+ *
+ * Fill-either semantics: entering just one counts the other as 0 and shows the
+ * sum, so a total is present whenever at least one is. The schema applies the
+ * same rule.
+ *
+ * Takes no props: validity is the platform's, and any database-reported message is
+ * routed to these inputs by `name` from the form's `validationErrors`.
  */
-export function PreparationTimesField({
-  defaultPrep,
-  defaultCook,
-}: PreparationTimesFieldProps = {}) {
-  const [prep, setPrep] = useState(defaultPrep ?? '');
-  const [cook, setCook] = useState(defaultCook ?? '');
+export function PreparationTimesField() {
+  const [prep, setPrep] = useState('');
+  const [cook, setCook] = useState('');
 
   const toNum = (raw: string) =>
     raw.trim() !== '' && Number.isFinite(Number(raw)) ? Number(raw) : null;
@@ -47,19 +44,19 @@ export function PreparationTimesField({
       </legend>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <NumberField
-          name="prepMinutes"
+          name="preparationTimes.prep"
           label="Prep"
           value={prep}
           onChange={setPrep}
         />
         <NumberField
-          name="cookMinutes"
+          name="preparationTimes.cook"
           label="Cook"
           value={cook}
           onChange={setCook}
         />
+        {/* No `name`: derived for display, never submitted. */}
         <NumberField
-          name="totalMinutes"
           label="Total"
           value={total}
           isReadOnly

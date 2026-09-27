@@ -19,6 +19,12 @@ export interface TextFieldProps extends RACTextFieldProps {
   errorMessage?: string | ((validation: ValidationResult) => string);
 }
 
+/**
+ * Single-line text field. Presentational only — it takes validity as props
+ * (`isInvalid` + `errorMessage`) rather than deciding it, so the caller's
+ * validation layer stays the single authority. `<FieldError>` renders its
+ * children only while `isInvalid` is true.
+ */
 export function TextField({
   label,
   description,

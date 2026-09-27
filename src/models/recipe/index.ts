@@ -57,3 +57,10 @@ export interface Recipe {
 }
 
 export type RecipeDocument = Recipe & { _id: ObjectId; createdAt: Date };
+
+/**
+ * A recipe as a caller supplies it for insertion. `submit()` owns `schemaVersion`
+ * (and `createdAt`/`_id`), setting them after spreading the caller's object, so
+ * requiring them here would be a fiction.
+ */
+export type RecipeInput = Omit<Recipe, 'schemaVersion'>;
