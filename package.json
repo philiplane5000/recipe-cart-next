@@ -4,20 +4,22 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "npm run db:validator -- --soft",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "seed": "tsx --env-file=.env --env-file=.env.local src/models/recipe/seedRecipes.ts"
+    "seed": "tsx --env-file=.env --env-file=.env.local src/models/recipe/seedRecipes.ts",
+    "db:validator": "tsx --env-file=.env --env-file-if-exists=.env.local src/models/recipe/schema/installValidator.ts"
   },
   "dependencies": {
     "lucide-react": "^1.8.0",
     "mongodb": "^7.1.1",
     "next": "16.2.7",
     "react": "19.2.7",
-    "react-aria-components": "^1.15.1",
+    "react-aria-components": "^1.18.0",
     "react-dom": "19.2.7",
     "tailwind-merge": "^3.4.1",
     "tailwind-variants": "^3.2.2"

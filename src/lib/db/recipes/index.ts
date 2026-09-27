@@ -2,26 +2,29 @@ import { ObjectId } from 'mongodb';
 import type { InsertOneResult, WithoutId } from 'mongodb';
 import { getDb } from '@/lib/db/client';
 import { CURRENT_SCHEMA_VERSION } from '@/models/recipe';
-import type { Recipe, RecipeDocument } from '@/models/recipe';
+import type { RecipeInput, RecipeDocument } from '@/models/recipe';
 
 /**
- * Inserts a recipe into the recipes collection
+ * Inserts a recipe into the recipes collection.
+ *
+ * Deliberately performs **no validation**. The collection's `$jsonSchema` is the
+ * single authority, so a bad document must reach it and be refused with a code-121
+ * error that `describeDocumentValidationFailure` can explain. An early guard here
+ * would throw a plain Error instead, which callers can only report as a 500.
+ *
+ * `schemaVersion` and `createdAt` are set AFTER the spread, so a caller cannot
+ * supply them.
+ *
  * @returns the result of the insert operation
- * @throws {Error} If required fields are missing
+ * @throws a code-121 error when the document fails collection validation
  * @throws {writeError | writeConcernError} If the insert fails due to errors w/ write or write concern
  * @param recipe
  */
 export async function submit(
-  recipe: Recipe,
+  recipe: RecipeInput,
 ): Promise<InsertOneResult<RecipeDocument>> {
-  // Basic validation throw any errors for handlers to catch
-  if (!recipe.name || !recipe.ingredients?.length) {
-    throw new Error('Name and ingredients are required');
-  }
-
   const db = await getDb();
   return db.collection<WithoutId<RecipeDocument>>('recipes').insertOne({
-    visibility: 'private',
     ...recipe,
     schemaVersion: CURRENT_SCHEMA_VERSION,
     createdAt: new Date(),

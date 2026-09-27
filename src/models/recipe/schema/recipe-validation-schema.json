@@ -1,6 +1,7 @@
 {
   "$jsonSchema": {
     "bsonType": "object",
+    "additionalProperties": false,
     "required": [
       "_id",
       "createdAt",
@@ -20,42 +21,57 @@
         "bsonType": "date"
       },
       "description": {
-        "bsonType": "string"
+        "bsonType": "string",
+        "minLength": 1,
+        "maxLength": 280
       },
       "ingredients": {
         "bsonType": "array",
+        "minItems": 1,
         "items": {
           "bsonType": "object",
-          "required": ["name", "quantity", "unit"],
+          "additionalProperties": false,
+          "required": ["name", "quantity"],
           "properties": {
             "name": {
-              "bsonType": "string"
+              "bsonType": "string",
+              "minLength": 1
             },
             "quantity": {
-              "bsonType": ["int", "double"]
+              "bsonType": ["int", "double"],
+              "minimum": 0
             },
             "unit": {
-              "bsonType": "string"
+              "bsonType": "string",
+              "minLength": 1
             },
             "notes": {
-              "bsonType": "string"
+              "bsonType": "string",
+              "minLength": 1
             }
           }
         }
       },
       "name": {
-        "bsonType": "string"
+        "bsonType": "string",
+        "minLength": 1
       },
       "schemaVersion": {
-        "bsonType": ["int", "double"]
+        "bsonType": ["int", "double"],
+        "minimum": 1,
+        "multipleOf": 1
       },
       "servings": {
-        "bsonType": ["int", "double"]
+        "bsonType": ["int", "double"],
+        "minimum": 1,
+        "multipleOf": 1
       },
       "steps": {
         "bsonType": "array",
+        "minItems": 1,
         "items": {
-          "bsonType": "string"
+          "bsonType": "string",
+          "minLength": 1
         }
       },
       "visibility": {
@@ -63,73 +79,71 @@
         "enum": ["private", "public"]
       },
       "contributorId": {
-        "bsonType": "string"
+        "bsonType": "string",
+        "minLength": 1
       },
       "image": {
         "oneOf": [
           {
             "bsonType": "object",
+            "additionalProperties": false,
             "required": ["source", "key"],
             "properties": {
               "source": { "bsonType": "string", "enum": ["upload"] },
-              "key": { "bsonType": "string" }
+              "key": { "bsonType": "string", "minLength": 1 }
             }
           },
           {
             "bsonType": "object",
+            "additionalProperties": false,
             "required": ["source", "url"],
             "properties": {
               "source": { "bsonType": "string", "enum": ["url"] },
-              "url": { "bsonType": "string" }
+              "url": { "bsonType": "string", "minLength": 1 }
             }
           }
         ]
       },
       "nutrition": {
         "bsonType": "object",
+        "additionalProperties": false,
         "properties": {
-          "calories": {
-            "bsonType": ["int", "double"]
-          },
-          "carbohydrates": {
-            "bsonType": ["int", "double"]
-          },
-          "fat": {
-            "bsonType": ["int", "double"]
-          },
-          "protein": {
-            "bsonType": ["int", "double"]
-          },
-          "saturatedFat": {
-            "bsonType": ["int", "double"]
-          },
-          "sodium": {
-            "bsonType": ["int", "double"]
-          },
-          "sugar": {
-            "bsonType": ["int", "double"]
-          }
+          "calories": { "bsonType": ["int", "double"], "minimum": 0 },
+          "carbohydrates": { "bsonType": ["int", "double"], "minimum": 0 },
+          "fat": { "bsonType": ["int", "double"], "minimum": 0 },
+          "protein": { "bsonType": ["int", "double"], "minimum": 0 },
+          "saturatedFat": { "bsonType": ["int", "double"], "minimum": 0 },
+          "sodium": { "bsonType": ["int", "double"], "minimum": 0 },
+          "sugar": { "bsonType": ["int", "double"], "minimum": 0 }
         }
       },
       "preparationTimes": {
         "bsonType": "object",
+        "additionalProperties": false,
         "required": ["cook", "prep", "total"],
         "properties": {
           "cook": {
-            "bsonType": ["int", "double"]
+            "bsonType": ["int", "double"],
+            "minimum": 0,
+            "multipleOf": 1
           },
           "prep": {
-            "bsonType": ["int", "double"]
+            "bsonType": ["int", "double"],
+            "minimum": 0,
+            "multipleOf": 1
           },
           "total": {
-            "bsonType": ["int", "double"]
+            "bsonType": ["int", "double"],
+            "minimum": 0,
+            "multipleOf": 1
           }
         }
       },
       "tags": {
         "bsonType": "array",
         "items": {
-          "bsonType": "string"
+          "bsonType": "string",
+          "minLength": 1
         }
       }
     }
