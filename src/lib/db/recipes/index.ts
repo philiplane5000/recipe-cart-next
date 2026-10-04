@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { ObjectId } from 'mongodb';
 import type { InsertOneResult, WithoutId } from 'mongodb';
 import { getDb } from '@/lib/db/client';
@@ -47,6 +48,25 @@ export async function fetchById(id: string): Promise<RecipeDocument | null> {
     .collection<RecipeDocument>('recipes')
     .findOne({ _id: new ObjectId(id) });
 }
+
+/**
+ * Fetches a single recipe for rendering, so a page and its `generateMetadata`
+ * can share one database read.
+ *
+ * Differs from `fetchById` in two ways:
+ * - it is memoised per request (React `cache`), so repeated calls with the same
+ *   id during one render hit the database once
+ * - a malformed id resolves `null` rather than throwing, because no stored recipe
+ *   can have one. Database failures still reject, so an outage is never mistaken
+ *   for a missing recipe.
+ *
+ * @returns the recipe document, or null if not found or the id is malformed
+ * @param id
+ */
+export const getRecipe = cache(
+  async (id: string): Promise<RecipeDocument | null> =>
+    ObjectId.isValid(id) ? fetchById(id) : null,
+);
 
 /**
  * Deletes a single recipe by its MongoDB document ID
